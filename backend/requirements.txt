@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+psutil
+sqlalchemy
+requests
+python-dotenv
+os
+signal
