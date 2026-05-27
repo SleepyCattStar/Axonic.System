@@ -6,8 +6,6 @@ import {
     FaLinux
 } from "react-icons/fa";
 
-import { killProcess } from "../api/telemetryApi";
-
 function getProcessIcon(name) {
 
     const process = name.toLowerCase();
@@ -36,21 +34,19 @@ function ProcessRow({ proc }) {
     return (
 
         <div className="
+            bg-[#090909]
+            border
+            border-[#171717]
+            rounded-2xl
+            p-5
             flex
             items-center
             justify-between
-            px-5
-            py-4
-            mb-3
-            rounded-xl
-            border
-            border-[#2a2f3a]
-            bg-[#151922]
-            hover:border-cyan-400
-            hover:shadow-[0_0_20px_rgba(34,211,238,0.15)]
-            hover:bg-[#1a202c]
             transition-all
-            duration-200
+            duration-300
+            hover:border-cyan-400/20
+            hover:bg-[#0d0d0d]
+            hover:shadow-[0_0_25px_rgba(34,211,238,0.08)]
         ">
 
             <div className="
@@ -60,26 +56,32 @@ function ProcessRow({ proc }) {
             ">
 
                 <div className="
+                    w-14
+                    h-14
+                    rounded-xl
+                    bg-[#141414]
+                    flex
+                    items-center
+                    justify-center
                     text-2xl
-                    bg-[#222833]
-                    p-3
-                    rounded-lg
                 ">
+
                     {getProcessIcon(proc.name)}
+
                 </div>
 
                 <div>
 
-                    <h3 className="
+                    <h2 className="
+                        text-lg
                         font-semibold
-                        text-white
                     ">
                         {proc.name}
-                    </h3>
+                    </h2>
 
                     <p className="
                         text-sm
-                        text-gray-400
+                        text-gray-500
                     ">
                         PID: {proc.pid}
                     </p>
@@ -90,19 +92,23 @@ function ProcessRow({ proc }) {
 
             <div className="
                 flex
-                gap-8
-                text-sm
+                gap-10
             ">
 
                 <div>
 
-                    <p className="text-gray-400">
+                    <p className="
+                        text-xs
+                        uppercase
+                        text-gray-500
+                    ">
                         CPU
                     </p>
 
                     <p className="
                         text-orange-400
                         font-semibold
+                        text-lg
                     ">
                         {proc.cpu_percent}%
                     </p>
@@ -111,13 +117,18 @@ function ProcessRow({ proc }) {
 
                 <div>
 
-                    <p className="text-gray-400">
+                    <p className="
+                        text-xs
+                        uppercase
+                        text-gray-500
+                    ">
                         RAM
                     </p>
 
                     <p className="
                         text-cyan-400
                         font-semibold
+                        text-lg
                     ">
                         {proc.memory_percent}%
                     </p>

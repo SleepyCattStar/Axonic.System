@@ -6,33 +6,35 @@ function StatCard({
 
     return (
 
-            <div className="
-                bg-[#090909]
-                border
-                border-[#1a1a1a]
-                rounded-2xl
-                p-4
-                shadow-[0_0_25px_rgba(255,255,255,0.03)]
-                hover:shadow-[0_0_30px_rgba(34,211,238,0.08)]
-                hover:border-cyan-400/30
-                transition-all
-            ">
+        <div className="
+            bg-[#080808]
+            border
+            border-[#161616]
+            rounded-2xl
+            p-5
+            transition-all
+            duration-300
+            hover:border-cyan-400/20
+            hover:shadow-[0_0_30px_rgba(34,211,238,0.08)]
+        ">
 
             <p className="
-                text-gray-400
+                text-gray-500
                 text-sm
+                uppercase
+                tracking-wider
             ">
                 {title}
             </p>
 
-            <h3 className={`
-                text-3xl
+            <h2 className={`
+                text-4xl
                 font-bold
-                mt-2
+                mt-3
                 ${color}
             `}>
                 {value}
-            </h3>
+            </h2>
 
         </div>
     );

@@ -41,7 +41,7 @@ def get_system_stats():
         "ram_usage": ram.percent,
         "total_ram": round(ram.total / (1024**3) , 2),
         "available_ram": round(ram.available / (1024**3),2),
-        "disk-usage": disk.percent,
+        "disk_usage": disk.percent,
         "total_disk": round(disk.total/(1024**3),2),
         "free_disk": round(disk.free/ (1024**3),2),
         "upload_speed_mb": bytes_to_mb(upload_speed),

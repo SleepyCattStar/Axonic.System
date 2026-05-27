@@ -5,22 +5,13 @@ function ProcessList({ processes }) {
     return (
 
         <div className="
-            bg-[#161b22]
-            border
-            border-[#2a2f3a]
-            rounded-xl
-            p-4
-            flex-1
+            flex
+            flex-col
+            gap-4
             overflow-y-auto
+            h-full
+            pr-2
         ">
-
-            <h2 className="
-                text-xl
-                font-semibold
-                mb-4
-            ">
-                Active Processes
-            </h2>
 
             {processes.map((proc) => (
 
@@ -28,6 +19,7 @@ function ProcessList({ processes }) {
                     key={proc.pid}
                     proc={proc}
                 />
+
             ))}
 
         </div>

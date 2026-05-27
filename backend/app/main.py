@@ -1,12 +1,16 @@
 from fastapi import FastAPI
 from app.api.routes import system
 from app.api.routes import process
+from app.api.routes import history
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+from app.services.history_service import start_background_collection
 
+app = FastAPI()
+start_background_collection()
 app.include_router(system.router,prefix = "/api")
 app.include_router(process.router,prefix = "/api")
+app.include_router(history.router,prefix = "/api")
 
 app.add_middleware(
     CORSMiddleware,

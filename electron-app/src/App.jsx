@@ -4,17 +4,28 @@ import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
 import StatCard from "./components/StatCard";
 import ProcessList from "./components/ProcessList";
+import PlaceholderPage from "./components/PlaceholderPage";
+import PerformanceCharts from "./components/PerformanceCharts";
 
 import {
+    fetchProcesses,
     fetchSystemStats,
-    fetchProcesses
+    fetchHistory                // getting the functions from the backend api here 
 } from "./api/telemetryApi";
 
 function App() {
 
-    const [stats, setStats] = useState(null);
+    const [stats, setStats] =
+        useState(null);
 
-    const [processes, setProcesses] = useState([]);
+    const [processes, setProcesses] =
+        useState([]);
+
+    const [history, setHistory] =
+    useState(null);
+
+    const [activeTab, setActiveTab] =
+        useState("overview");
 
     useEffect(() => {
 
@@ -27,6 +38,11 @@ function App() {
 
                 const processData =
                     await fetchProcesses();
+
+                const historyData =
+                    await fetchHistory();
+
+                setHistory(historyData)
 
                 setStats(statsData);
 
@@ -43,7 +59,8 @@ function App() {
         const interval =
             setInterval(loadData, 1500);
 
-        return () => clearInterval(interval);
+        return () =>
+            clearInterval(interval);
 
     }, []);
 
@@ -60,7 +77,7 @@ function App() {
                 justify-center
             ">
 
-                Loading Telemetry...
+                Loading...
 
             </div>
         );
@@ -71,11 +88,15 @@ function App() {
         <div className="
             h-screen
             flex
-            bg-[#0f1115]
+            bg-black
             text-white
+            overflow-hidden
         ">
 
-            <Sidebar />
+            <Sidebar
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+            />
 
             <div className="
                 flex-1
@@ -83,51 +104,80 @@ function App() {
                 flex-col
             ">
 
-                <Topbar />
+                <Topbar
+                    activeTab={activeTab}
+                />
 
                 <div className="
-                    grid
-                    grid-cols-4
-                    gap-4
+                    flex-1
+                    overflow-hidden
                     p-6
                 ">
 
-                    <StatCard
-                        title="CPU"
-                        value={`${stats.cpu_usage}%`}
-                        color="text-orange-400"
-                    />
+                    {
+                        activeTab === "overview" && (
 
-                    <StatCard
-                        title="RAM"
-                        value={`${stats.ram_usage}%`}
-                        color="text-cyan-400"
-                    />
+                            <div className="
+                                grid
+                                grid-cols-4
+                                gap-5
+                            ">
 
-                    <StatCard
-                        title="Disk"
-                        value={`${stats.disk_usage}%`}
-                        color="text-yellow-400"
-                    />
+                                <StatCard
+                                    title="CPU"
+                                    value={`${stats.cpu_usage}%`}
+                                    color="text-orange-400"
+                                />
 
-                    <StatCard
-                        title="Network"
-                        value={`↓ ${stats.download_speed_mb} MB/s`}
-                        color="text-green-400"
-                    />
+                                <StatCard
+                                    title="RAM"
+                                    value={`${stats.ram_usage}%`}
+                                    color="text-cyan-400"
+                                />
 
-                </div>
+                                <StatCard
+                                    title="Disk"
+                                    value={`${stats.disk_usage}%`}
+                                    color="text-yellow-400"
+                                />
 
-                <div className="
-                    px-6
-                    pb-6
-                    flex-1
-                    overflow-hidden
-                ">
+                                <StatCard
+                                    title="Network"
+                                    value={`↓ ${stats.download_speed_mb}`}
+                                    color="text-green-400"
+                                />
 
-                    <ProcessList
-                        processes={processes}
-                    />
+                            </div>
+                        )
+                    }
+
+                    {
+                        activeTab === "processes" && (
+
+                            <ProcessList
+                                processes={processes}
+                            />
+                        )
+                    }
+
+                    {
+                        activeTab === "performance" &&
+                        history && (
+
+                            <PerformanceCharts
+                                history={history}
+                            />
+                        )
+                    }
+
+                    {
+                        activeTab === "network" && (
+
+                            <PlaceholderPage
+                                title="Network Analytics"
+                            />
+                        )
+                    }
 
                 </div>
 

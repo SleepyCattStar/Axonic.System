@@ -6,3 +6,5 @@ requests
 python-dotenv
 os
 signal
+time
+threading
