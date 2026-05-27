@@ -10,8 +10,8 @@ function StatCard({
             bg-[#080808]
             border
             border-[#161616]
-            rounded-2xl
-            p-5
+            rounded-lg
+            p-1  
             transition-all
             duration-300
             hover:border-cyan-400/20

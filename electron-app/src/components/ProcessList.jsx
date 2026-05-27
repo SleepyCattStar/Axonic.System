@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
-import ProcessRow from "./ProcessRow";
+import ProcessGroup from "./ProcessGroup";
 
 function ProcessList({ processes }) {
 
@@ -8,43 +8,74 @@ function ProcessList({ processes }) {
     const [sortKey, setSortKey] = useState("cpu");
     const [sortOrder, setSortOrder] = useState("desc");
 
+    // toggle sort direction / key
     const toggleSort = (key) => {
 
         if (sortKey === key) {
-            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+            setSortOrder(prev =>
+                prev === "asc" ? "desc" : "asc"
+            );
         } else {
             setSortKey(key);
             setSortOrder("desc");
         }
     };
 
-    const sorted = processes
-        .filter(p =>
-            p.name.toLowerCase().includes(query.toLowerCase())
-        )
-        .sort((a, b) => {
+    // 1. GROUP BY PROCESS NAME
+    const grouped = processes.reduce((acc, p) => {
 
-            let A, B;
+        const name = p.name;
 
-            if (sortKey === "name") {
-                A = a.name.toLowerCase();
-                B = b.name.toLowerCase();
-            }
+        if (!acc[name]) {
+            acc[name] = {
+                name,
+                processes: [],
+                total_cpu: 0,
+                total_ram: 0
+            };
+        }
 
-            if (sortKey === "cpu") {
-                A = a.cpu_percent;
-                B = b.cpu_percent;
-            }
+        acc[name].processes.push(p);
 
-            if (sortKey === "ram") {
-                A = a.memory_percent;
-                B = b.memory_percent;
-            }
+        acc[name].total_cpu += p.cpu_percent;
+        acc[name].total_ram += p.memory_percent;
 
-            return sortOrder === "asc"
-                ? (A > B ? 1 : -1)
-                : (A < B ? 1 : -1);
-        });
+        return acc;
+
+    }, {});
+
+    // convert object → array
+    let groups = Object.values(grouped);
+
+    // 2. SEARCH FILTER (on group name)
+    groups = groups.filter(group =>
+        group.name.toLowerCase().includes(query.toLowerCase())
+    );
+
+    // 3. SORT GROUPS
+    groups = groups.sort((a, b) => {
+
+        let A, B;
+
+        if (sortKey === "name") {
+            A = a.name.toLowerCase();
+            B = b.name.toLowerCase();
+        }
+
+        if (sortKey === "cpu") {
+            A = a.total_cpu;
+            B = b.total_cpu;
+        }
+
+        if (sortKey === "ram") {
+            A = a.total_ram;
+            B = b.total_ram;
+        }
+
+        return sortOrder === "asc"
+            ? (A > B ? 1 : -1)
+            : (A < B ? 1 : -1);
+    });
 
     return (
 
@@ -70,7 +101,7 @@ function ProcessList({ processes }) {
                 <input
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search process..."
+                    placeholder="Search process groups..."
                     className="bg-transparent w-full outline-none text-white"
                 />
             </div>
@@ -84,47 +115,54 @@ function ProcessList({ processes }) {
                 mb-2
             ">
 
-                {/* NAME */}
                 <div
-                    className="col-span-5 flex items-center gap-1 cursor-pointer"
+                    className="col-span-5 cursor-pointer flex items-center gap-1"
                     onClick={() => toggleSort("name")}
                 >
-                    Name
+                    Process
                     {sortKey === "name" &&
                         (sortOrder === "asc" ? "▲" : "▼")}
                 </div>
 
-                {/* CPU */}
                 <div
-                    className="col-span-2 text-right cursor-pointer"
+                    className="col-span-3 text-right cursor-pointer"
                     onClick={() => toggleSort("cpu")}
                 >
-                    CPU {sortKey === "cpu" &&
+                    CPU
+                    {sortKey === "cpu" &&
                         (sortOrder === "asc" ? "▲" : "▼")}
                 </div>
 
-                {/* RAM */}
                 <div
-                    className="col-span-2 text-right cursor-pointer"
+                    className="col-span-3 text-right cursor-pointer"
                     onClick={() => toggleSort("ram")}
                 >
-                    RAM {sortKey === "ram" &&
+                    RAM
+                    {sortKey === "ram" &&
                         (sortOrder === "asc" ? "▲" : "▼")}
                 </div>
 
-                {/* ACTION */}
-                <div className="col-span-3 text-right">
-                    Action
+                <div className="col-span-1 text-right">
+                    {/* spacer */}
                 </div>
 
             </div>
 
-            {/* ROWS */}
+            {/* SCROLL AREA */}
             <div className="flex-1 overflow-y-auto pr-2 space-y-2">
 
-                {sorted.map(proc => (
-                    <ProcessRow key={proc.pid} proc={proc} />
-                ))}
+                {groups.length === 0 ? (
+                    <div className="text-gray-500 text-sm text-center mt-10">
+                        No processes found
+                    </div>
+                ) : (
+                    groups.map(group => (
+                        <ProcessGroup
+                            key={group.name}
+                            group={group}
+                        />
+                    ))
+                )}
 
             </div>
 
