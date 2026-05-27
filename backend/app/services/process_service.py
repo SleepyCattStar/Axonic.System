@@ -1,6 +1,7 @@
 import psutil
 import time
-
+import os
+import signal
 
 def get_top_processes(limit=10):
 
@@ -46,3 +47,14 @@ def get_top_processes(limit=10):
     )
 
     return processes[:limit]
+
+def kill_process(pid: int):
+
+    try:
+        os.kill(pid, signal.SIGTERM)
+        process = psutil.Process(pid)
+        process.kill()
+        return {"status": "killed", "pid": pid}
+
+    except Exception as e:
+        return {"status": "error", "message": str(e)}

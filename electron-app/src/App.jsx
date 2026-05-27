@@ -8,6 +8,7 @@ import PlaceholderPage from "./components/PlaceholderPage";
 import PerformanceCharts from "./components/PerformanceCharts";
 import MiniGraph from "./components/MiniGraph";
 import SystemInfo from "./components/SystemInfo";
+import TopProcesses from "./components/TopProcesses";
 
 import {
     fetchProcesses,
@@ -33,6 +34,14 @@ function App() {
 
     const [systemInfo, setSystemInfo] =
     useState(null);
+
+    const refreshProcesses = async () => {
+
+        const processData =
+            await fetchProcesses();
+
+        setProcesses(processData);
+    };
 
 
     useEffect(() => {
@@ -168,6 +177,11 @@ function App() {
 
                                 <SystemInfo                         // added the system info here for rendering inside the overview tab
                                     systemInfo={systemInfo}
+                                />
+
+                                <TopProcesses
+                                    processes={processes}
+                                    refresh={refreshProcesses}
                                 />
                             </div>
                         )
