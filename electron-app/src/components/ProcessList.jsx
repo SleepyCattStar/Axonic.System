@@ -7,7 +7,7 @@ function ProcessList({ processes }) {
         <div className="
             flex
             flex-col
-            gap-4
+            gap-2
             overflow-y-auto
             h-full
             pr-2

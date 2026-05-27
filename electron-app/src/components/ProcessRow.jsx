@@ -38,7 +38,7 @@ function ProcessRow({ proc }) {
             border
             border-[#171717]
             rounded-2xl
-            p-5
+            p-0.3
             flex
             items-center
             justify-between

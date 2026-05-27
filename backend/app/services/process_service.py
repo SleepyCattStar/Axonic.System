@@ -3,7 +3,7 @@ import time
 import os
 import signal
 
-def get_top_processes(limit=10):
+def get_top_processes(limit=30):
 
     # First sampling
     for proc in psutil.process_iter():
