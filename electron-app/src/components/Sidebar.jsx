@@ -47,21 +47,21 @@ function Sidebar({
 
             <div className="mb-10">
 
-                <h1 className="
+                <h5 className="
                     text-3xl
                     font-bold
                     text-white
                     tracking-wide
                 ">
-                    ProcMon
-                </h1>
+                    Axonic
+                </h5>
 
                 <p className="
                     text-sm
                     text-gray-500
                     mt-1
                 ">
-                    Enterprise Telemetry
+                    Task Manager
                 </p>
 
             </div>

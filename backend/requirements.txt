@@ -8,3 +8,5 @@ os
 signal
 time
 threading
+platform
+socket

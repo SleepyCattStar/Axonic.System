@@ -12,7 +12,7 @@ function PlaceholderPage({ title }) {
         ">
 
             <div className="text-8xl mb-4">
-                🙂
+                🙂 SOON
             </div>
 
             <h2 className="

@@ -6,6 +6,7 @@ import StatCard from "./components/StatCard";
 import ProcessList from "./components/ProcessList";
 import PlaceholderPage from "./components/PlaceholderPage";
 import PerformanceCharts from "./components/PerformanceCharts";
+import MiniGraph from "./components/MiniGraph";
 
 import {
     fetchProcesses,
@@ -115,36 +116,41 @@ function App() {
                 ">
 
                     {
-                        activeTab === "overview" && (
+                        activeTab === "overview" &&
+                        history && (
 
                             <div className="
                                 grid
-                                grid-cols-4
-                                gap-5
+                                grid-cols-2
+                                gap-6
                             ">
 
-                                <StatCard
-                                    title="CPU"
+                                <MiniGraph
+                                    title="CPU Usage"
                                     value={`${stats.cpu_usage}%`}
-                                    color="text-orange-400"
+                                    data={history.cpu}
+                                    color="#f97316"
                                 />
 
-                                <StatCard
-                                    title="RAM"
+                                <MiniGraph
+                                    title="RAM Usage"
                                     value={`${stats.ram_usage}%`}
-                                    color="text-cyan-400"
+                                    data={history.ram}
+                                    color="#06b6d4"
                                 />
 
-                                <StatCard
-                                    title="Disk"
+                                <MiniGraph
+                                    title="Disk Usage"
                                     value={`${stats.disk_usage}%`}
-                                    color="text-yellow-400"
+                                    data={history.disk}
+                                    color="#eab308"
                                 />
 
-                                <StatCard
-                                    title="Network"
-                                    value={`↓ ${stats.download_speed_mb}`}
-                                    color="text-green-400"
+                                <MiniGraph
+                                    title="Download"
+                                    value={`${stats.download_speed_mb} MB/s`}
+                                    data={history.network_download}
+                                    color="#22c55e"
                                 />
 
                             </div>
