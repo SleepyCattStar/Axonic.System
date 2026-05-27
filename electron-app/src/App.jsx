@@ -7,15 +7,18 @@ import ProcessList from "./components/ProcessList";
 import PlaceholderPage from "./components/PlaceholderPage";
 import PerformanceCharts from "./components/PerformanceCharts";
 import MiniGraph from "./components/MiniGraph";
+import SystemInfo from "./components/SystemInfo";
 
 import {
     fetchProcesses,
     fetchSystemStats,
-    fetchHistory                // getting the functions from the backend api here 
+    fetchHistory,                // getting the functions from the backend api here 
+    fetchSystemInfo
 } from "./api/telemetryApi";
 
 function App() {
 
+    // All states here
     const [stats, setStats] =
         useState(null);
 
@@ -28,12 +31,17 @@ function App() {
     const [activeTab, setActiveTab] =
         useState("overview");
 
+    const [systemInfo, setSystemInfo] =
+    useState(null);
+
+
     useEffect(() => {
 
         const loadData = async () => {
 
             try {
 
+                // fetching data here
                 const statsData =
                     await fetchSystemStats();
 
@@ -42,6 +50,11 @@ function App() {
 
                 const historyData =
                     await fetchHistory();
+
+                const systemInfoData =
+                    await fetchSystemInfo();
+
+                setSystemInfo(systemInfoData);
 
                 setHistory(historyData)
 
@@ -153,6 +166,9 @@ function App() {
                                     color="#22c55e"
                                 />
 
+                                <SystemInfo                         // added the system info here for rendering inside the overview tab
+                                    systemInfo={systemInfo}
+                                />
                             </div>
                         )
                     }

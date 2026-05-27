@@ -1,0 +1,3 @@
+for the frontend, the emojis used are luicide icons
+
+link here-> https://lucide.dev/icons/

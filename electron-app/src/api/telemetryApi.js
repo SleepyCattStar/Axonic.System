@@ -35,3 +35,14 @@ async () => {
 
     return response.data;
 };
+
+export const fetchSystemInfo =
+async () => {
+
+    const response =
+        await axios.get(
+            `${BASE_URL}/system-info`
+        );
+
+    return response.data;
+};
