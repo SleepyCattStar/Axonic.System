@@ -4,7 +4,36 @@ import { useState } from "react";
 
 function TopProcesses({ processes, refresh }) {
 
+    //states
     const [query, setQuery] = useState("");
+    const [holding, setHolding] = useState(false);
+    const [toast, setToast] = useState(null);
+    const [confirm, setConfirm] = useState(null); // stores process
+
+
+
+    //checking for sensitive/system processes
+    const isSystemProcess = (name) => {
+
+        const systemKeywords = [
+            "system",
+            "kernel",
+            "gnome",
+            "kworker",
+            "init",
+            "dbus"
+        ];
+
+        {isSystemProcess(p.name) && (
+            <span className="text-xs text-yellow-400 ml-2">
+                ⚠ system
+            </span>
+        )}
+
+        return systemKeywords.some((k) =>
+            name.toLowerCase().includes(k)
+        );
+    };
 
     const killProcess = async (pid) => {
 
@@ -14,12 +43,24 @@ function TopProcesses({ processes, refresh }) {
                 `http://127.0.0.1:8000/api/process/${pid}`
             );
 
+            setToast({
+                type: "success",
+                msg: "Process killed successfully"
+            });
+
             refresh();
 
         } catch (err) {
 
+            setToast({
+                type: "error",
+                msg: "Failed to kill process"
+            });
+
             console.error(err);
         }
+
+        setTimeout(() => setToast(null), 2000);
     };
 
     const filtered = processes
@@ -52,6 +93,8 @@ function TopProcesses({ processes, refresh }) {
             )
         );
     };
+
+    
 
     return (
 
@@ -107,7 +150,7 @@ function TopProcesses({ processes, refresh }) {
             </div>
 
             {/* Process List */}
-            <div className="space-y-3">
+            <div className="space-y-1.5">
 
                 {filtered.length === 0 ? (
 
@@ -115,7 +158,7 @@ function TopProcesses({ processes, refresh }) {
                         text-gray-500
                         text-sm
                         text-center
-                        py-6
+                        py-4
                     ">
                         No processes found
                     </p>
@@ -133,8 +176,8 @@ function TopProcesses({ processes, refresh }) {
                                 bg-[#0d0d0d]
                                 border
                                 border-[#1a1a1a]
-                                p-3
-                                rounded-xl
+                                p-2
+                                rounded-lg
                                 hover:border-cyan-400/20
                                 transition-all
                             "
@@ -170,6 +213,16 @@ function TopProcesses({ processes, refresh }) {
                                     <X size={18} />
                                 </button>
 
+                                <button
+                                    onClick={() => setConfirm(p)}
+                                    className="
+                                        text-yellow-400
+                                        hover:text-yellow-300
+                                    "
+                                >
+                                    ⚠
+                                </button>
+
                             </div>
 
                         </div>
@@ -178,9 +231,92 @@ function TopProcesses({ processes, refresh }) {
                 )}
 
             </div>
+                
+                {confirm && (
+                    <div className="
+                        fixed inset-0
+                        bg-black/70
+                        flex items-center justify-center
+                        z-50
+                    ">
+
+                        <div className="
+                            bg-[#0d0d0d]
+                            border border-[#1a1a1a]
+                            p-6 rounded-2xl
+                            w-[320px]
+                            text-center
+                        ">
+
+                            <h2 className="text-lg font-semibold mb-2">
+                                Kill Process?
+                            </h2>
+
+                            <p className="text-gray-400 text-sm mb-6">
+                                {confirm.name} (PID: {confirm.pid})
+                            </p>
+
+                            <div className="flex justify-center gap-4">
+
+                                <button
+                                    onClick={() => {
+                                        killProcess(confirm.pid);
+                                        setConfirm(null);
+                                    }}
+                                    className="
+                                        bg-red-500/20
+                                        text-red-400
+                                        px-4 py-2
+                                        rounded-lg
+                                        hover:bg-red-500/30
+                                    "
+                                >
+                                    ✔ Kill
+                                </button>
+
+                                <button
+                                    onClick={() => setConfirm(null)}
+                                    className="
+                                        bg-gray-700/30
+                                        text-gray-300
+                                        px-4 py-2
+                                        rounded-lg
+                                        hover:bg-gray-700/50
+                                    "
+                                >
+                                    ✖ Cancel
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                )}
+
+                {toast && (
+                    <div className={`
+                        fixed bottom-5 right-5
+                        px-4 py-3
+                        rounded-xl
+                        text-sm
+                        z-50
+                        bg-[#0d0d0d]
+                        border border-[#1a1a1a]
+                        ${toast.type === "success"
+                            ? "text-green-400"
+                            : "text-red-400"}
+                    `}>
+                        {toast.msg}
+                    </div>
+                )}
 
         </div>
+
+        
     );
 }
+
+
 
 export default TopProcesses;
