@@ -59,3 +59,20 @@ export const fetchAnalyticsWeekly = async () => {
     return res.data;
 };
 
+export const fetchDailyHistory = async () => {
+
+    const res = await axios.get(
+        `${BASE_URL}/analytics/history/daily`
+    );
+
+    return res.data;
+};
+
+export const fetchWeeklyHistory = async () => {
+
+    const res = await axios.get(
+        `${BASE_URL}/analytics/history/weekly`
+    );
+
+    return res.data;
+};
