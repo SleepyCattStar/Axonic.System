@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.services.analytics_service import get_daily_average, get_weekly_average,get_daily_history,get_weekly_history, get_process_load_distribution
+from app.services.analytics_service import get_daily_average, get_weekly_average,get_daily_history,get_weekly_history, get_process_load_distribution, get_core_usage
 
 
 router = APIRouter()
@@ -24,3 +24,7 @@ def history_weekly_analytics():
 @router.get("/analytics/process-load")
 def process_load_analytics():
     return get_process_load_distribution()
+
+@router.get("/analytics/core-usage")
+def core_usage_analytics():
+    return get_core_usage()

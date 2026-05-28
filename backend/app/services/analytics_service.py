@@ -300,3 +300,21 @@ def get_process_load_distribution():
         return {
             "error": str(e)
         }
+    
+def get_core_usage():
+
+    core_percentages = ps.cpu_percent(
+        percpu=True
+    )
+
+    return [
+
+        {
+            "core": f"Core {i}",
+            "usage": usage
+        }
+
+        for i, usage in enumerate(
+            core_percentages
+        )
+    ]
