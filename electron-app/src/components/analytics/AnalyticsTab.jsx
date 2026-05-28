@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import DailyStats from "./DailyStats";
 import WeeklyStats from "./WeeklyStats";
 import AnalyticsGraph from "./AnalyticsGraph";
+import ProcessLoadChart from "./ProcessLoadChart";
 
 import {
     fetchAnalyticsDaily,
     fetchAnalyticsWeekly,
     fetchDailyHistory,
-    fetchWeeklyHistory
+    fetchWeeklyHistory,
+    fetchProcessLoad
 } from "../../api/telemetryApi";
 
 function AnalyticsTab() {
@@ -18,45 +20,117 @@ function AnalyticsTab() {
     const [weekly, setWeekly] = useState(null);
     const [dailyHistory, setDailyHistory] = useState([]);
     const [weeklyHistory, setWeeklyHistory] = useState([]); 
+    const [processLoad, setProcessLoad] = useState([]);
+
+    // useEffect(() => {
+
+    //     const loadAnalytics = async () => {
+
+    //         try {
+
+    //             const dailyData =
+    //                 await fetchAnalyticsDaily();
+
+    //             const weeklyData =
+    //                 await fetchAnalyticsWeekly();
+
+    //             const dailyHistoryData =
+    //                 await fetchDailyHistory();
+
+    //             const weeklyHistoryData =
+    //                 await fetchWeeklyHistory();
+
+    //             const processLoadData =
+    //                 await fetchProcessLoad();
+
+    //             setProcessLoad(processLoadData);
+
+    //             setDailyHistory(dailyHistoryData);
+    //             setWeeklyHistory(weeklyHistoryData);
+
+    //             setDaily(dailyData);
+    //             setWeekly(weeklyData);
+
+    //         } catch (err) {
+
+    //             console.error(err);
+    //         }
+    //     };
+
+    //     loadAnalytics();
+
+    //     const interval =
+    //         setInterval(loadAnalytics, 5000);
+
+    //     return () => clearInterval(interval);
+
+    // }, []);
 
     useEffect(() => {
 
-        const loadAnalytics = async () => {
+    // FAST REFRESH
+    const loadAnalytics = async () => {
 
-            try {
+        try {
 
-                const dailyData =
-                    await fetchAnalyticsDaily();
+            const dailyData =
+                await fetchAnalyticsDaily();
 
-                const weeklyData =
-                    await fetchAnalyticsWeekly();
+            const weeklyData =
+                await fetchAnalyticsWeekly();
 
-                const dailyHistoryData =
-                    await fetchDailyHistory();
+            const dailyHistoryData =
+                await fetchDailyHistory();
 
-                const weeklyHistoryData =
-                    await fetchWeeklyHistory();
+            const weeklyHistoryData =
+                await fetchWeeklyHistory();
 
-                setDailyHistory(dailyHistoryData);
-                setWeeklyHistory(weeklyHistoryData);
+            setDaily(dailyData);
+            setWeekly(weeklyData);
 
-                setDaily(dailyData);
-                setWeekly(weeklyData);
+            setDailyHistory(dailyHistoryData);
+            setWeeklyHistory(weeklyHistoryData);
 
-            } catch (err) {
+        } catch (err) {
 
-                console.error(err);
-            }
-        };
+            console.error(err);
+        }
+    };
 
-        loadAnalytics();
+    // SLOW REFRESH
+    const loadProcessLoad = async () => {
 
-        const interval =
-            setInterval(loadAnalytics, 5000);
+        try {
 
-        return () => clearInterval(interval);
+            const processLoadData =
+                await fetchProcessLoad();
 
-    }, []);
+            setProcessLoad(processLoadData);
+
+        } catch (err) {
+
+            console.error(err);
+        }
+    };
+
+    // initial load
+    loadAnalytics();
+    loadProcessLoad();
+
+    // intervals
+    const analyticsInterval =
+        setInterval(loadAnalytics, 10000);  // 10 seconds
+
+    const processInterval =
+        setInterval(loadProcessLoad, 18000);  // 18 seconds
+
+    return () => {
+
+        clearInterval(analyticsInterval);
+        clearInterval(processInterval);
+    };
+
+}, []);
 
     // if (!daily || !weekly) {
 
@@ -96,7 +170,20 @@ if (!daily || !weekly) {
 
     return (
 
-        <div className="space-y-6">
+    <div className="
+        h-full
+        overflow-y-auto
+        pr-2
+    ">
+
+        <div className="
+            bg-[#080808]
+            border border-[#171717]
+            rounded-2xl
+            p-6
+            space-y-6
+            min-h-full
+        ">
 
             <h1 className="text-2xl font-bold">
                 Dashboard
@@ -108,22 +195,38 @@ if (!daily || !weekly) {
 
                 <WeeklyStats weekly={weekly} />
 
-                <AnalyticsGraph
-                    title="Daily CPU vs RAM"
-                    data={dailyHistory}
-                />
+                <div className="col-span-2">
 
-                <AnalyticsGraph
-                    title="Weekly CPU vs RAM"
-                    data={weeklyHistory}
-                />
+                    <AnalyticsGraph
+                        title="Daily CPU vs RAM"
+                        data={dailyHistory}
+                    />
+
+                </div>
+
+                <div className="col-span-2">
+
+                    <AnalyticsGraph
+                        title="Weekly CPU vs RAM"
+                        data={weeklyHistory}
+                    />
+
+                </div>
+
+                <div className="col-span-2">
+
+                    <ProcessLoadChart
+                        data={processLoad}
+                    />
+
+                </div>
 
             </div>
 
-
-
         </div>
-    );
+
+    </div>
+);
 }
 
 export default AnalyticsTab;
