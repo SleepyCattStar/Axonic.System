@@ -2,7 +2,7 @@ import {
     LayoutDashboard,
     Activity,
     Cpu,
-    Network
+    Network,
 } from "lucide-react";
 
 function Sidebar({
@@ -27,11 +27,12 @@ function Sidebar({
             icon: Cpu
         },
         {
-            id: "network",
-            label: "Network",
+            id: "Analytics",
+            label: "Analytics",
             icon: Network
         }
     ];
+    // NOTE ANY CHANGE HERE SHOULD ALSO BE ADDED TO THE APP.JSX
 
     return (
 

@@ -207,10 +207,10 @@ function App() {
                     }
 
                     {
-                        activeTab === "network" && (
+                        activeTab === "Analytics" && (
 
                             <PlaceholderPage
-                                title="Network Analytics"
+                                title="Device Analytics"
                             />
                         )
                     }
