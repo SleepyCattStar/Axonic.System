@@ -85,3 +85,12 @@ export const fetchProcessLoad = async () => {
 
     return res.data;
 };
+
+export const fetchCoreUsage = async () => {
+
+    const res = await axios.get(
+        `${BASE_URL}/analytics/core-usage`
+    );
+
+    return res.data;
+};

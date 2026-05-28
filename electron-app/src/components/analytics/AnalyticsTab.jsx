@@ -4,13 +4,15 @@ import DailyStats from "./DailyStats";
 import WeeklyStats from "./WeeklyStats";
 import AnalyticsGraph from "./AnalyticsGraph";
 import ProcessLoadChart from "./ProcessLoadChart";
+import CoreUsageChart from "./CoreUsageChart";
 
 import {
     fetchAnalyticsDaily,
     fetchAnalyticsWeekly,
     fetchDailyHistory,
     fetchWeeklyHistory,
-    fetchProcessLoad
+    fetchProcessLoad,
+    fetchCoreUsage
 } from "../../api/telemetryApi";
 
 function AnalyticsTab() {
@@ -21,7 +23,7 @@ function AnalyticsTab() {
     const [dailyHistory, setDailyHistory] = useState([]);
     const [weeklyHistory, setWeeklyHistory] = useState([]); 
     const [processLoad, setProcessLoad] = useState([]);
-
+    const [coreUsage, setCoreUsage] = useState([]);
     // useEffect(() => {
 
     //     const loadAnalytics = async () => {
@@ -84,6 +86,11 @@ function AnalyticsTab() {
 
             const weeklyHistoryData =
                 await fetchWeeklyHistory();
+
+            const coreUsageData =
+                await fetchCoreUsage();
+
+            setCoreUsage(coreUsageData);
 
             setDaily(dailyData);
             setWeekly(weeklyData);
@@ -217,6 +224,14 @@ if (!daily || !weekly) {
 
                     <ProcessLoadChart
                         data={processLoad}
+                    />
+
+                </div>
+
+                <div className="col-span-2">
+
+                    <CoreUsageChart
+                        data={coreUsage}
                     />
 
                 </div>

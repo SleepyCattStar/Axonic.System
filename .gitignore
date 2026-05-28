@@ -34,3 +34,5 @@ pnpm-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# personal file
+future-plans.md
