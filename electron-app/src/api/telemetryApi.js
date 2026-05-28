@@ -76,3 +76,12 @@ export const fetchWeeklyHistory = async () => {
 
     return res.data;
 };
+
+export const fetchProcessLoad = async () => {
+
+    const res = await axios.get(
+        `${BASE_URL}/analytics/process-load`
+    );
+
+    return res.data;
+};
