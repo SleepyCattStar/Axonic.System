@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.services.analytics_service import get_daily_average, get_weekly_average
+from app.services.analytics_service import get_daily_average, get_weekly_average,get_daily_history,get_weekly_history
 
 
 router = APIRouter()
@@ -12,3 +12,11 @@ def daily_analytics():
 @router.get("/analytics/weekly")
 def weekly_analytics():
     return get_weekly_average()
+
+@router.get("/analytics/history/daily")
+def history_daily_analytics():
+    return get_daily_history()
+
+@router.get("/analytics/history/weekly")
+def history_weekly_analytics():
+    return get_weekly_history()
