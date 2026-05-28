@@ -27,7 +27,7 @@ function Sidebar({
             icon: Cpu
         },
         {
-            id: "Analytics",
+            id: "analytics",
             label: "Analytics",
             icon: Network
         }

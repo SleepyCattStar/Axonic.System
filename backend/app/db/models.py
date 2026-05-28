@@ -8,7 +8,7 @@ class SystemMetrics(Base):
     # Creating columns
 
     id = Column(Integer, primary_key = True, index = True)
-    imestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     cpu = Column(Float)
     ram = Column(Float)
     disk = Column(Float)

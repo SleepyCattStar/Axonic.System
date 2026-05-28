@@ -9,6 +9,7 @@ import PerformanceCharts from "./components/PerformanceCharts";
 import MiniGraph from "./components/MiniGraph";
 import SystemInfo from "./components/SystemInfo";
 import TopProcesses from "./components/TopProcesses";
+import AnalyticsTab from "./components/analytics/AnalyticsTab";
 
 import {
     fetchProcesses,
@@ -207,11 +208,11 @@ function App() {
                     }
 
                     {
-                        activeTab === "Analytics" && (
+                        activeTab === "analytics" && (
 
-                            <PlaceholderPage
-                                title="Device Analytics"
-                            />
+                            <AnalyticsTab />
+
+                         
                         )
                     }
 

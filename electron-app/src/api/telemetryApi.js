@@ -46,3 +46,16 @@ async () => {
 
     return response.data;
 };
+
+// FIXED MISMATCHES OF BASE, TO BASE_URL
+
+export const fetchAnalyticsDaily = async () => {
+    const res = await axios.get(`${BASE_URL}/analytics/daily`);
+    return res.data;
+};
+
+export const fetchAnalyticsWeekly = async () => {
+    const res = await axios.get(`${BASE_URL}/analytics/weekly`);
+    return res.data;
+};
+
