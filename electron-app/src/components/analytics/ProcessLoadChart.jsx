@@ -87,3 +87,6 @@ function ProcessLoadChart({ data }) {
 }
 
 export default ProcessLoadChart;
+
+
+//                             isAnimationActive={false} add to <Pie  to reduce lag

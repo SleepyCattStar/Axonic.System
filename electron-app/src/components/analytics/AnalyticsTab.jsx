@@ -95,8 +95,8 @@ function AnalyticsTab() {
             setDaily(dailyData);
             setWeekly(weeklyData);
 
-            setDailyHistory(dailyHistoryData);
-            setWeeklyHistory(weeklyHistoryData);
+            setDailyHistory(dailyHistoryData.slice(-70));
+            setWeeklyHistory(weeklyHistoryData.slice(-50));
 
         } catch (err) {
 
@@ -126,7 +126,7 @@ function AnalyticsTab() {
 
     // intervals
     const analyticsInterval =
-        setInterval(loadAnalytics, 10000);  // 10 seconds
+        setInterval(loadAnalytics, 30000);  // 10 seconds
 
     const processInterval =
         setInterval(loadProcessLoad, 18000);  // 18 seconds

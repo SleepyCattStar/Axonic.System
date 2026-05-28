@@ -60,6 +60,7 @@ function AnalyticsGraph({
                         <Line
                             type="monotone"
                             dataKey="cpu"
+                            isAnimationActive={false}
                             stroke="#f97316"
                             strokeWidth={2}
                             dot={false}
@@ -84,3 +85,6 @@ function AnalyticsGraph({
 }
 
 export default AnalyticsGraph;
+
+//                             isAnimationActive={false}
+//    Add that to <Line to cut off the animations to reduce lag.

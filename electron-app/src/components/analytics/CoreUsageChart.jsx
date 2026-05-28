@@ -72,3 +72,7 @@ function CoreUsageChart({ data }) {
 }
 
 export default CoreUsageChart;
+
+// isAnimationActive={false}
+
+// Add to <Bar to reduce lag
