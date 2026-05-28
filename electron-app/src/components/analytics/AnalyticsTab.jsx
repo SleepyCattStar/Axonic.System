@@ -67,17 +67,29 @@ function AnalyticsTab() {
     //     );
     // }
 
-    if (!daily || !weekly) {
-    return (
-        <div className="w-full p-4 space-y-6 animate-pulse">
-            {/* Header Skeleton */}
-            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+//     if (!daily || !weekly) {
+//     return (
+//         <div className="w-full p-4 space-y-6 animate-pulse">
+//             {/* Header Skeleton */}
+//             <div className="h-8 bg-gray-200 rounded w-1/4"></div>
             
-            {/* Chart/Card Skeletons */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="h-64 bg-gray-200 rounded-lg"></div>
-                <div className="h-64 bg-gray-200 rounded-lg"></div>
-            </div>
+//             {/* Chart/Card Skeletons */}
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                 <div className="h-64 bg-gray-200 rounded-lg"></div>
+//                 <div className="h-64 bg-gray-200 rounded-lg"></div>
+//             </div>
+//         </div>
+//     );
+// }
+
+if (!daily || !weekly) {
+    return (
+        <div className="flex flex-col items-center justify-center min-h-75 text-gray-500 space-y-4">
+            <div className="w-10 h-10 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
+            
+            <p className="text-sm font-medium animate-pulse">
+                Loading your analytics...
+            </p>
         </div>
     );
 }
