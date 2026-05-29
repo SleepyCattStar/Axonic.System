@@ -43,7 +43,7 @@ function ProcessesTab() {
         load();
 
         const interval =
-            setInterval(load, 3000);
+            setInterval(load, 6000);
 
         return () => {
             alive = false;

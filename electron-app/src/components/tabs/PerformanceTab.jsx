@@ -43,7 +43,7 @@ function PerformanceTab() {
         load();
 
         const interval =
-            setInterval(load, 5000);
+            setInterval(load, 8000);
 
         return () => {
             alive = false;
