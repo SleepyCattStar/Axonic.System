@@ -21,39 +21,24 @@ function CoreUsageChart({ data }) {
             p-4
         ">
 
-            <h2 className="
-                text-lg
-                font-semibold
-                mb-4
-            ">
+            <h2 className="text-lg font-semibold mb-4">
                 Per-Core CPU Usage
             </h2>
 
             <div className="h-87.5">
 
-                <ResponsiveContainer
-                    width="100%"
-                    height="100%"
-                >
+                <ResponsiveContainer width="100%" height="100%">
 
-                    <BarChart
-                        data={data}
-                    >
+                    <BarChart data={data}>
 
                         <CartesianGrid
                             strokeDasharray="3 3"
                             stroke="#1f1f1f"
                         />
 
-                        <XAxis
-                            dataKey="core"
-                            stroke="#888"
-                        />
+                        <XAxis dataKey="core" stroke="#888" />
 
-                        <YAxis
-                            stroke="#888"
-                            domain={[0, 100]}
-                        />
+                        <YAxis stroke="#888" domain={[0, 100]} />
 
                         <Tooltip />
 
@@ -61,6 +46,7 @@ function CoreUsageChart({ data }) {
                             dataKey="usage"
                             radius={[6, 6, 0, 0]}
                             fill="#06b6d4"
+                            isAnimationActive={false}
                         />
 
                     </BarChart>
@@ -73,9 +59,4 @@ function CoreUsageChart({ data }) {
     );
 }
 
-// export default CoreUsageChart;
 export default React.memo(CoreUsageChart);
-
-// isAnimationActive={false}
-
-// Add to <Bar to reduce lag

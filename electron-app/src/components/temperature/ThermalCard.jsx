@@ -1,3 +1,4 @@
+import React from "react";
 import {
     Thermometer,
     HardDrive,
@@ -5,7 +6,7 @@ import {
     AlertTriangle
 } from "lucide-react";
 
-function ThermalCard({ temperature }) {
+const ThermalCard = React.memo(function ThermalCard({ temperature }) {
 
     if (!temperature) {
 
@@ -244,6 +245,6 @@ function ThermalCard({ temperature }) {
 
         </div>
     );
-}
+});
 
 export default ThermalCard;

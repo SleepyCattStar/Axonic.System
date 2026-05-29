@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { memo } from "react";
 
+import { useSlowTelemetry } from "../../context/TelemetryContext";
 import DailyStats from "./DailyStats";
 import WeeklyStats from "./WeeklyStats";
 import AnalyticsGraph from "./AnalyticsGraph";
@@ -7,305 +8,120 @@ import ProcessLoadChart from "./ProcessLoadChart";
 import CoreUsageChart from "./CoreUsageChart";
 import AlertsPanel from "./AlertsPanel";
 
-import {
-    fetchAnalyticsDaily,
-    fetchAnalyticsWeekly,
-    fetchDailyHistory,
-    fetchWeeklyHistory,
-    fetchProcessLoad,
-    fetchCoreUsage,
-    fetchAlerts
-} from "../../api/telemetryApi";
+// ─────────────────────────────────────────────────────────────────────────────
+// Stable line config arrays — module-level constants, same reference forever.
+// ─────────────────────────────────────────────────────────────────────────────
 
-function AnalyticsTab() {
+const CPU_RAM_LINES = [
+    { dataKey: "cpu",  stroke: "#f97316", name: "CPU" },
+    { dataKey: "ram",  stroke: "#06b6d4", name: "RAM" },
+];
 
-    // states
-    const [daily, setDaily] = useState(null);
-    const [weekly, setWeekly] = useState(null);
-    const [dailyHistory, setDailyHistory] = useState([]);
-    const [weeklyHistory, setWeeklyHistory] = useState([]); 
-    const [processLoad, setProcessLoad] = useState([]);
-    const [coreUsage, setCoreUsage] = useState([]);
-    const [alerts, setAlerts] = useState([]);
-    
-    // useEffect(() => {
+const THERMAL_LINES = [
+    { dataKey: "cpu_temp", stroke: "#ef4444", name: "CPU Temp" },
+    { dataKey: "ssd_temp", stroke: "#eab308", name: "SSD Temp" },
+];
 
-    //     const loadAnalytics = async () => {
+// ─────────────────────────────────────────────────────────────────────────────
+// AnalyticsTab — PURE UI CONSUMER (SLOW stream only)
+//
+// Only re-renders every 30 s when the slow stream updates.
+// FAST and MEDIUM updates have ZERO effect on this component.
+// ─────────────────────────────────────────────────────────────────────────────
 
-    //         try {
+const AnalyticsTab = memo(function AnalyticsTab() {
 
-    //             const dailyData =
-    //                 await fetchAnalyticsDaily();
+    // 🔴 SLOW only — this tab never needs fast or medium data
+    const {
+        analyticsDaily,
+        analyticsWeekly,
+        dailyHistory,
+        weeklyHistory,
+        processLoad,
+        coreUsage,
+        alerts,
+    } = useSlowTelemetry();
 
-    //             const weeklyData =
-    //                 await fetchAnalyticsWeekly();
-
-    //             const dailyHistoryData =
-    //                 await fetchDailyHistory();
-
-    //             const weeklyHistoryData =
-    //                 await fetchWeeklyHistory();
-
-    //             const processLoadData =
-    //                 await fetchProcessLoad();
-
-    //             setProcessLoad(processLoadData);
-
-    //             setDailyHistory(dailyHistoryData);
-    //             setWeeklyHistory(weeklyHistoryData);
-
-    //             setDaily(dailyData);
-    //             setWeekly(weeklyData);
-
-    //         } catch (err) {
-
-    //             console.error(err);
-    //         }
-    //     };
-
-    //     loadAnalytics();
-
-    //     const interval =
-    //         setInterval(loadAnalytics, 5000);
-
-    //     return () => clearInterval(interval);
-
-    // }, []);
-
-    useEffect(() => {
-
-    // FAST REFRESH
-    const loadAnalytics = async () => {
-
-        try {
-
-            const dailyData =
-                await fetchAnalyticsDaily();
-
-            const weeklyData =
-                await fetchAnalyticsWeekly();
-
-            const dailyHistoryData =
-                await fetchDailyHistory();
-
-            const weeklyHistoryData =
-                await fetchWeeklyHistory();
-
-            const coreUsageData =
-                await fetchCoreUsage();
-            
-            const alertsData =
-                await fetchAlerts();
-
-            setAlerts(alertsData);
-
-            setCoreUsage(coreUsageData);
-
-            setDaily(dailyData);
-            setWeekly(weeklyData);
-
-            setDailyHistory(dailyHistoryData.slice(-70));
-            setWeeklyHistory(weeklyHistoryData.slice(-50));
-
-        } catch (err) {
-
-            console.error(err);
-        }
-    };
-
-    // SLOW REFRESH
-    const loadProcessLoad = async () => {
-
-        try {
-
-            const processLoadData =
-                await fetchProcessLoad();
-
-            setProcessLoad(processLoadData);
-
-        } catch (err) {
-
-            console.error(err);
-        }
-    };
-
-    // initial load
-    loadAnalytics();
-    loadProcessLoad();
-
-    // intervals
-    const analyticsInterval =
-        setInterval(loadAnalytics, 30000);  // 10 seconds
-
-    const processInterval =
-        setInterval(loadProcessLoad, 18000);  // 18 seconds
-
-    return () => {
-
-        clearInterval(analyticsInterval);
-        clearInterval(processInterval);
-    };
-
-}, []);
-
-    // if (!daily || !weekly) {
-
-    //     return (
-    //         <div className="text-gray-500">
-    //             Loading analytics...
-    //         </div>
-    //     );
-    // }
-
-//     if (!daily || !weekly) {
-//     return (
-//         <div className="w-full p-4 space-y-6 animate-pulse">
-//             {/* Header Skeleton */}
-//             <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-            
-//             {/* Chart/Card Skeletons */}
-//             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//                 <div className="h-64 bg-gray-200 rounded-lg"></div>
-//                 <div className="h-64 bg-gray-200 rounded-lg"></div>
-//             </div>
-//         </div>
-//     );
-// }
-
-if (!daily || !weekly) {
-    return (
-        <div className="flex flex-col items-center justify-center min-h-75 text-gray-500 space-y-4">
-            <div className="w-10 h-10 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
-            
-            <p className="text-sm font-medium animate-pulse">
-                Loading your analytics...
-            </p>
-        </div>
-    );
-}
+    if (!analyticsDaily || !analyticsWeekly) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-75 text-gray-500 space-y-4">
+                <div className="w-10 h-10 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
+                <p className="text-sm font-medium animate-pulse">
+                    Loading your analytics...
+                </p>
+            </div>
+        );
+    }
 
     return (
-
-    <div className="
-        h-full
-        overflow-y-auto
-        pr-2
-    ">
 
         <div className="
-            bg-[#080808]
-            border border-[#171717]
-            rounded-2xl
-            p-6
-            space-y-6
-            min-h-full
+            h-full
+            overflow-y-auto
+            pr-2
         ">
 
-            <h1 className="text-2xl font-bold">
-                Dashboard
-            </h1>
+            <div className="
+                bg-[#080808]
+                border border-[#171717]
+                rounded-2xl
+                p-6
+                space-y-6
+                min-h-full
+            ">
 
-            <div className="grid grid-cols-2 gap-4">
+                <h1 className="text-2xl font-bold">
+                    Dashboard
+                </h1>
 
-                <DailyStats daily={daily} />
+                <div className="grid grid-cols-2 gap-4">
 
-                <WeeklyStats weekly={weekly} />
+                    <DailyStats daily={analyticsDaily} />
 
-                <div className="col-span-2">
+                    <WeeklyStats weekly={analyticsWeekly} />
 
-                    <AnalyticsGraph
-                        title="Daily CPU vs RAM"
-                        data={dailyHistory}
-                        lines={[
-                            {
-                                dataKey: "cpu",
-                                stroke: "#f97316",
-                                name: "CPU"
-                            },
-                            {
-                                dataKey: "ram",
-                                stroke: "#06b6d4",
-                                name: "RAM"
-                            }
-                        ]}
-                    />
+                    <div className="col-span-2">
+                        <AnalyticsGraph
+                            title="Daily CPU vs RAM"
+                            data={dailyHistory}
+                            lines={CPU_RAM_LINES}
+                        />
+                    </div>
 
-                </div>
+                    <div className="col-span-2">
+                        <AnalyticsGraph
+                            title="Weekly CPU vs RAM"
+                            data={weeklyHistory}
+                            lines={CPU_RAM_LINES}
+                        />
+                    </div>
 
+                    <div className="col-span-2">
+                        <AnalyticsGraph
+                            title="Thermal History"
+                            data={dailyHistory}
+                            lines={THERMAL_LINES}
+                        />
+                    </div>
 
-                <div className="col-span-2">
+                    <div className="col-span-2">
+                        <ProcessLoadChart data={processLoad} />
+                    </div>
 
-                    <AnalyticsGraph
-                        title="Weekly CPU vs RAM"
-                        data={weeklyHistory}
-                        lines={[
-                            {
-                                dataKey: "cpu",
-                                stroke: "#f97316",
-                                name: "CPU"
-                            },
-                            {
-                                dataKey: "ram",
-                                stroke: "#06b6d4",
-                                name: "RAM"
-                            }
-                        ]}
-                    />
+                    <div className="col-span-2">
+                        <CoreUsageChart data={coreUsage} />
+                    </div>
 
-                </div>
-
-                <div className="col-span-2">
-
-                    <AnalyticsGraph
-                        title="Thermal History"
-                        data={dailyHistory}
-                        lines={[
-                            {
-                                dataKey: "cpu_temp",
-                                stroke: "#ef4444",
-                                name: "CPU Temp"
-                            },
-                            {
-                                dataKey: "ssd_temp",
-                                stroke: "#eab308",
-                                name: "SSD Temp"
-                            }
-                        ]}
-                    />
+                    <div className="col-span-2">
+                        <AlertsPanel alerts={alerts} />
+                    </div>
 
                 </div>
-
-                <div className="col-span-2">
-
-                    <ProcessLoadChart
-                        data={processLoad}
-                    />
-
-                </div>
-
-                <div className="col-span-2">
-
-                    <CoreUsageChart
-                        data={coreUsage}
-                    />
-
-                </div>
-
-                <div className="col-span-2">
-
-                    <AlertsPanel
-                        alerts={alerts}
-                    />
-
-                </div>
-
 
             </div>
 
         </div>
-
-    </div>
-);
-}
+    );
+});
 
 export default AnalyticsTab;

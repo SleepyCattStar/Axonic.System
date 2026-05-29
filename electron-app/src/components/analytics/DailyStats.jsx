@@ -1,4 +1,6 @@
-function DailyStats({ daily }) {
+import React from "react";
+
+const DailyStats = React.memo(function DailyStats({ daily }) {
 
     return (
 
@@ -10,11 +12,7 @@ function DailyStats({ daily }) {
             border-[#1a1a1a]
         ">
 
-            <h2 className="
-                text-lg
-                font-semibold
-                mb-3
-            ">
+            <h2 className="text-lg font-semibold mb-3">
                 Today
             </h2>
 
@@ -42,6 +40,6 @@ function DailyStats({ daily }) {
 
         </div>
     );
-}
+});
 
 export default DailyStats;

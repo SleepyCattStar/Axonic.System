@@ -1,58 +1,38 @@
-import { useEffect, useState } from "react";
+import { memo, useMemo } from "react";
+
+import {
+    useFastTelemetry,
+    useMediumTelemetry,
+    useSlowTelemetry,
+} from "../../context/TelemetryContext";
 
 import PerformanceCharts from "../PerformanceCharts";
 import GPUCard from "../gpu/GPUCard";
 import ThermalCard from "../temperature/ThermalCard";
 
-import {
-    fetchHistory,
-    fetchGPUStats,
-    fetchTemperatureStats
-} from "../../api/telemetryApi";
+const PerformanceTab = memo(function PerformanceTab() {
 
-function PerformanceTab() {
+    // 🔵 FAST — live GPU numbers
+    const { gpu } = useFastTelemetry();
 
-    const [history, setHistory] = useState(null);
-    const [gpu, setGpu] = useState(null);
-    const [temp, setTemp] = useState(null);
+    // 🟡 MEDIUM — chart arrays
+    const { history } = useMediumTelemetry();
 
-    useEffect(() => {
+    // 🔴 SLOW — temperature
+    const { temp } = useSlowTelemetry();
 
-        let alive = true;
-
-        const load = async () => {
-            try {
-
-                const [h, g, t] = await Promise.all([
-                    fetchHistory(),
-                    fetchGPUStats(),
-                    fetchTemperatureStats()
-                ]);
-
-                if (!alive) return;
-
-                setHistory(h);
-                setGpu(g);
-                setTemp(t);
-
-            } catch (err) {
-                console.error(err);
-            }
+    // ── FIX 2: slice history arrays before passing to PerformanceCharts ──
+    const slicedHistory = useMemo(() => {
+        if (!history) return null;
+        return {
+            cpu:              history.cpu?.slice(-60)              ?? [],
+            ram:              history.ram?.slice(-60)              ?? [],
+            disk:             history.disk?.slice(-60)             ?? [],
+            network_download: history.network_download?.slice(-60) ?? [],
         };
+    }, [history]);
 
-        load();
-
-        const interval =
-            setInterval(load, 8000);
-
-        return () => {
-            alive = false;
-            clearInterval(interval);
-        };
-
-    }, []);
-
-    if (!history) {
+    if (!slicedHistory) {
         return (
             <div className="text-gray-400 p-4">
                 Loading performance...
@@ -64,7 +44,7 @@ function PerformanceTab() {
 
         <div className="h-full overflow-y-auto pr-2 space-y-6">
 
-            <PerformanceCharts history={history} />
+            <PerformanceCharts history={slicedHistory} />
 
             <GPUCard gpu={gpu} />
 
@@ -72,6 +52,6 @@ function PerformanceTab() {
 
         </div>
     );
-}
+});
 
 export default PerformanceTab;

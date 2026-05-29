@@ -1,59 +1,32 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+// ─────────────────────────────────────────────────────────────────────────────
+// ProcessList — UNUSED LEGACY COMPONENT
+//
+// This component is NOT imported anywhere in the app.
+// ProcessesTab (src/components/tabs/ProcessesTab.jsx) is the active replacement
+// which consumes data from the central TelemetryContext.
+//
+// Kept here for reference. All polling has been removed.
+// If you need this component, use useTelemetry() to get processes + coreHistory.
+// ─────────────────────────────────────────────────────────────────────────────
+
+import { useState, useMemo, useCallback, memo } from "react";
 
 import { Search } from "lucide-react";
 
 import ProcessGroup from "./ProcessGroup";
 import CoreMiniGraphs from "./CoreMiniGraphs";
+import { useMediumTelemetry } from "../context/TelemetryContext";
 
-import {
-    fetchCoreHistory
-} from "../api/telemetryApi";
+const ProcessList = memo(function ProcessList() {
 
-function ProcessList({ processes }) {
+    const { processes, coreHistory } = useMediumTelemetry();
 
     // search
     const [query, setQuery] = useState("");
 
     // sorting
-    const [sortKey, setSortKey] =
-        useState("cpu");
-
-    const [sortOrder, setSortOrder] =
-        useState("desc");
-
-    // cpu core history
-    const [coreHistory, setCoreHistory] =
-        useState({});
-
-    // -------------------------
-    // CORE HISTORY FETCH
-    // -------------------------
-    useEffect(() => {
-
-        const loadCoreHistory = async () => {
-
-            try {
-
-                const data =
-                    await fetchCoreHistory();
-
-                setCoreHistory(data);
-
-            } catch (err) {
-
-                console.error(err);
-            }
-        };
-
-        loadCoreHistory();
-
-        const interval =
-            setInterval(loadCoreHistory, 5000);
-
-        return () =>
-            clearInterval(interval);
-
-    }, []);
+    const [sortKey, setSortKey] = useState("cpu");
+    const [sortOrder, setSortOrder] = useState("desc");
 
     // -------------------------
     // SORT TOGGLE
@@ -118,13 +91,12 @@ function ProcessList({ processes }) {
             Object.values(grouped);
 
         // search filter
-        result = result.filter(group =>
-            group.name
-                .toLowerCase()
-                .includes(
-                    query.toLowerCase()
-                )
-        );
+        if (query) {
+            const q = query.toLowerCase();
+            result = result.filter(group =>
+                group.name.toLowerCase().includes(q)
+            );
+        }
 
         // sorting
         result.sort((a, b) => {
@@ -346,6 +318,6 @@ function ProcessList({ processes }) {
 
         </div>
     );
-}
+});
 
 export default ProcessList;

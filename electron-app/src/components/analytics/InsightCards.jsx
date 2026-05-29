@@ -1,4 +1,10 @@
-function InsightCards() {
+import { memo } from "react";
+
+// This component has no props and renders static content.
+// memo() ensures it never re-renders regardless of how often
+// its parent (AnalyticsTab) re-renders from context updates.
+
+const InsightCards = memo(function InsightCards() {
 
     return (
 
@@ -22,6 +28,6 @@ function InsightCards() {
 
         </div>
     );
-}
+});
 
 export default InsightCards;

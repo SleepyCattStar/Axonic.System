@@ -1,4 +1,6 @@
-function WeeklyStats({ weekly }) {
+import React from "react";
+
+const WeeklyStats = React.memo(function WeeklyStats({ weekly }) {
 
     return (
 
@@ -10,11 +12,7 @@ function WeeklyStats({ weekly }) {
             border-[#1a1a1a]
         ">
 
-            <h2 className="
-                text-lg
-                font-semibold
-                mb-3
-            ">
+            <h2 className="text-lg font-semibold mb-3">
                 This Week
             </h2>
 
@@ -38,6 +36,6 @@ function WeeklyStats({ weekly }) {
 
         </div>
     );
-}
+});
 
 export default WeeklyStats;

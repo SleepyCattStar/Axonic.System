@@ -1,103 +1,51 @@
-import { useEffect, useState, useMemo } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
+import { Search } from "lucide-react";
 
+import { useMediumTelemetry } from "../../context/TelemetryContext";
 import ProcessGroup from "../ProcessGroup";
 import CoreMiniGraphs from "../CoreMiniGraphs";
 
-import { Search } from "lucide-react";
+const ProcessesTab = memo(function ProcessesTab() {
 
-import {
-    fetchProcesses,
-    fetchCoreHistory
-} from "../../api/telemetryApi";
+    // 🟡 MEDIUM only — no fast/slow needed
+    const { processes, coreHistory } = useMediumTelemetry();
 
-function ProcessesTab() {
-
-    const [processes, setProcesses] = useState([]);
-    const [coreHistory, setCoreHistory] = useState({});
-    const [query, setQuery] = useState("");
-    const [sortKey, setSortKey] = useState("cpu");
+    const [query,     setQuery]     = useState("");
+    const [sortKey,   setSortKey]   = useState("cpu");
     const [sortOrder, setSortOrder] = useState("desc");
 
-    useEffect(() => {
-
-        let alive = true;
-
-        const load = async () => {
-            try {
-
-                const [p, c] = await Promise.all([
-                    fetchProcesses(),
-                    fetchCoreHistory()
-                ]);
-
-                if (!alive) return;
-
-                setProcesses(p);
-                setCoreHistory(c);
-
-            } catch (err) {
-                console.error(err);
-            }
-        };
-
-        load();
-
-        const interval =
-            setInterval(load, 6000);
-
-        return () => {
-            alive = false;
-            clearInterval(interval);
-        };
-
-    }, []);
+    const handleQueryChange = useCallback(
+        (e) => setQuery(e.target.value),
+        []
+    );
 
     const groups = useMemo(() => {
 
         const grouped = processes.reduce((acc, p) => {
-
             if (!acc[p.name]) {
-
-                acc[p.name] = {
-                    name: p.name,
-                    processes: [],
-                    total_cpu: 0,
-                    total_ram: 0
-                };
+                acc[p.name] = { name: p.name, processes: [], total_cpu: 0, total_ram: 0 };
             }
-
             acc[p.name].processes.push(p);
             acc[p.name].total_cpu += p.cpu_percent;
             acc[p.name].total_ram += p.memory_percent;
-
             return acc;
-
         }, {});
 
         let result = Object.values(grouped);
 
-        result = result.filter(g =>
-            g.name.toLowerCase().includes(query.toLowerCase())
-        );
+        if (query) {
+            const q = query.toLowerCase();
+            result = result.filter(g => g.name.toLowerCase().includes(q));
+        }
 
         result.sort((a, b) => {
+            const A = sortKey === "name" ? a.name
+                    : sortKey === "cpu"  ? a.total_cpu
+                    :                     a.total_ram;
 
-            let A, B;
-
-            if (sortKey === "name") {
-                A = a.name;
-                B = b.name;
-            }
-
-            if (sortKey === "cpu") {
-                A = a.total_cpu;
-                B = b.total_cpu;
-            }
-
-            if (sortKey === "ram") {
-                A = a.total_ram;
-                B = b.total_ram;
-            }
+            const B = sortKey === "name" ? b.name
+                    : sortKey === "cpu"  ? b.total_cpu
+                    :                     b.total_ram;
 
             return sortOrder === "asc"
                 ? (A > B ? 1 : -1)
@@ -123,7 +71,7 @@ function ProcessesTab() {
                     <input
                         className="bg-transparent outline-none text-white w-full"
                         value={query}
-                        onChange={(e) => setQuery(e.target.value)}
+                        onChange={handleQueryChange}
                         placeholder="Search processes..."
                     />
 
@@ -139,6 +87,6 @@ function ProcessesTab() {
 
         </div>
     );
-}
+});
 
 export default ProcessesTab;

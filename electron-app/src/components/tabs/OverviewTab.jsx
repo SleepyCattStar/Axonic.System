@@ -1,70 +1,36 @@
-import { useEffect, useState } from "react";
+import { memo, useMemo } from "react";
+
+import {
+    useFastTelemetry,
+    useMediumTelemetry,
+    useSlowTelemetry,
+} from "../../context/TelemetryContext";
 
 import MiniGraph from "../MiniGraph";
 import SystemInfo from "../SystemInfo";
 import TopProcesses from "../TopProcesses";
 import GPUOverview from "../gpu/GPUOverview";
 
-import {
-    fetchSystemStats,
-    fetchHistory,
-    fetchSystemInfo,
-    fetchProcesses,
-    fetchGPUStats
-} from "../../api/telemetryApi";
+const OverviewTab = memo(function OverviewTab() {
 
-function OverviewTab() {
+    // 🔵 FAST — numbers update every 1.5 s
+    const { stats, gpu } = useFastTelemetry();
 
-    const [stats, setStats] = useState(null);
-    const [history, setHistory] = useState(null);
-    const [systemInfo, setSystemInfo] = useState(null);
-    const [processes, setProcesses] = useState([]);
-    const [gpu, setGpu] = useState(null);
+    // 🟡 MEDIUM — chart arrays update every 6 s
+    const { history, processes } = useMediumTelemetry();
 
-    useEffect(() => {
+    // 🔴 SLOW — barely changes
+    const { systemInfo } = useSlowTelemetry();
 
-        let alive = true;
+    // ── FIX 2: slice history BEFORE passing to children ──────────────────
+    // useMemo ensures the sliced array keeps the same reference between
+    // renders unless `history` itself has changed (medium stream update).
+    // This prevents MiniGraph from re-rendering on FAST updates.
 
-        const load = async () => {
-            try {
-                const [
-                    s,
-                    h,
-                    si,
-                    p,
-                    g
-                ] = await Promise.all([
-                    fetchSystemStats(),
-                    fetchHistory(),
-                    fetchSystemInfo(),
-                    fetchProcesses(),
-                    fetchGPUStats()
-                ]);
-
-                if (!alive) return;
-
-                setStats(s);
-                setHistory(h);
-                setSystemInfo(si);
-                setProcesses(p);
-                setGpu(g);
-
-            } catch (err) {
-                console.error(err);
-            }
-        };
-
-        load();
-
-        const interval =
-            setInterval(load, 4000);
-
-        return () => {
-            alive = false;
-            clearInterval(interval);
-        };
-
-    }, []);
+    const cpuSeries     = useMemo(() => history?.cpu?.slice(-30)              ?? [], [history]);
+    const ramSeries     = useMemo(() => history?.ram?.slice(-30)              ?? [], [history]);
+    const diskSeries    = useMemo(() => history?.disk?.slice(-30)             ?? [], [history]);
+    const networkSeries = useMemo(() => history?.network_download?.slice(-30) ?? [], [history]);
 
     if (!stats || !history) {
         return (
@@ -83,28 +49,28 @@ function OverviewTab() {
                 <MiniGraph
                     title="CPU"
                     value={`${stats.cpu_usage}%`}
-                    data={history.cpu}
+                    data={cpuSeries}
                     color="#f97316"
                 />
 
                 <MiniGraph
                     title="RAM"
                     value={`${stats.ram_usage}%`}
-                    data={history.ram}
+                    data={ramSeries}
                     color="#06b6d4"
                 />
 
                 <MiniGraph
                     title="Disk"
                     value={`${stats.disk_usage}%`}
-                    data={history.disk}
+                    data={diskSeries}
                     color="#eab308"
                 />
 
                 <MiniGraph
                     title="Network"
                     value={`${stats.download_speed_mb} MB/s`}
-                    data={history.network_download}
+                    data={networkSeries}
                     color="#22c55e"
                 />
 
@@ -120,6 +86,6 @@ function OverviewTab() {
 
         </div>
     );
-}
+});
 
 export default OverviewTab;

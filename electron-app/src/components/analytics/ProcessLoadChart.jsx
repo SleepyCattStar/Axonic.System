@@ -9,9 +9,7 @@ import {
 
 import React from "react";
 
-
 const COLORS = [
-
     "#06b6d4",
     "#f97316",
     "#22c55e",
@@ -19,7 +17,7 @@ const COLORS = [
     "#8b5cf6",
     "#ef4444",
     "#14b8a6",
-    "#f43f5e"
+    "#f43f5e",
 ];
 
 function ProcessLoadChart({ data }) {
@@ -33,20 +31,13 @@ function ProcessLoadChart({ data }) {
             p-4
         ">
 
-            <h2 className="
-                text-lg
-                font-semibold
-                mb-4
-            ">
+            <h2 className="text-lg font-semibold mb-4">
                 RAM Usage Distribution
             </h2>
 
             <div className="h-100">
 
-                <ResponsiveContainer
-                    width="100%"
-                    height="100%"
-                >
+                <ResponsiveContainer width="100%" height="100%">
 
                     <PieChart>
 
@@ -58,19 +49,14 @@ function ProcessLoadChart({ data }) {
                             cy="50%"
                             outerRadius={130}
                             label
+                            isAnimationActive={false}
                         >
 
                             {data.map((_, index) => (
-
                                 <Cell
                                     key={index}
-                                    fill={
-                                        COLORS[
-                                            index % COLORS.length
-                                        ]
-                                    }
+                                    fill={COLORS[index % COLORS.length]}
                                 />
-
                             ))}
 
                         </Pie>
@@ -89,8 +75,4 @@ function ProcessLoadChart({ data }) {
     );
 }
 
-// export default ProcessLoadChart;
 export default React.memo(ProcessLoadChart);
-
-
-//                             isAnimationActive={false} add to <Pie  to reduce lag

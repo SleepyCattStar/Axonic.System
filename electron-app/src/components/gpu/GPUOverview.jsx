@@ -1,3 +1,4 @@
+import React from "react";
 import {
     Cpu,
     Thermometer,
@@ -6,7 +7,7 @@ import {
 
 import GPUStat from "./GPUStat";
 
-function GPUOverview({
+const GPUOverview = React.memo(function GPUOverview({
 
     gpu
 
@@ -102,6 +103,6 @@ function GPUOverview({
 
         </div>
     );
-}
+});
 
 export default GPUOverview;

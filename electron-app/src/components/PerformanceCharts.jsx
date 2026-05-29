@@ -7,7 +7,9 @@ import {
     Tooltip
 } from "recharts";
 
-function GraphCard({
+import React from "react";
+
+const GraphCard = React.memo(function GraphCard({
     title,
     data,
     color
@@ -64,7 +66,7 @@ function GraphCard({
                             stroke={color}
                             strokeWidth={3}
                             dot={false}
-                            isAnimationActive={true}
+                            isAnimationActive={false}
                         />
 
                     </LineChart>
@@ -75,9 +77,9 @@ function GraphCard({
 
         </div>
     );
-}
+});
 
-function PerformanceCharts({
+const PerformanceCharts = React.memo(function PerformanceCharts({
     history
 }) {
 
@@ -115,6 +117,6 @@ function PerformanceCharts({
 
         </div>
     );
-}
+});
 
 export default PerformanceCharts;

@@ -1,8 +1,8 @@
 import axios from "axios";
 import { X, Search } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 
-function TopProcesses({ processes, refresh }) {
+const TopProcesses = React.memo(function TopProcesses({ processes, refresh }) {
 
     //states
     const [query, setQuery] = useState("");
@@ -315,7 +315,7 @@ function TopProcesses({ processes, refresh }) {
 
         
     );
-}
+});
 
 
 

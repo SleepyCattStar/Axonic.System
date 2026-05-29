@@ -70,7 +70,7 @@ function MiniGraph({
                             stroke={color}
                             strokeWidth={3}
                             dot={false}
-                            isAnimationActive={true}
+                            isAnimationActive={false}
                         />
 
                     </LineChart>
