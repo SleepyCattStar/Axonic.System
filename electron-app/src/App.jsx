@@ -12,13 +12,15 @@ import TopProcesses from "./components/TopProcesses";
 import AnalyticsTab from "./components/analytics/AnalyticsTab";
 import GPUCard from "./components/gpu/GPUCard";
 import GPUOverview from "./components/gpu/GPUOverview";
+import ThermalCard from "./components/temperature/ThermalCard";
 
 import {
     fetchProcesses,
     fetchSystemStats,
     fetchHistory,                // getting the functions from the backend api here 
     fetchSystemInfo,
-    fetchGPUStats
+    fetchGPUStats,
+    fetchTemperatureStats
 } from "./api/telemetryApi";
 
 function App() {
@@ -40,6 +42,9 @@ function App() {
     useState(null);
 
     const [gpuStats, setGpuStats] =
+    useState(null);
+
+    const [temperature, setTemperature] =
     useState(null);
 
     const refreshProcesses = async () => {
@@ -69,6 +74,11 @@ function App() {
 
                 const systemInfoData =
                     await fetchSystemInfo();
+                
+                const tempData =
+                    await fetchTemperatureStats();
+
+                setTemperature(tempData);
 
                 setSystemInfo(systemInfoData);
 
@@ -265,6 +275,10 @@ function App() {
 
                                 <GPUCard
                                     gpu={gpuStats}
+                                />
+
+                                <ThermalCard
+                                    temperature={temperature}
                                 />
 
                             </div>

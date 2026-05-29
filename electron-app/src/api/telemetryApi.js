@@ -144,3 +144,13 @@ export const fetchGPUStats = async () => {
 
     return res.data;
 };
+
+export const fetchTemperatureStats =
+async () => {
+
+    const res = await axios.get(
+        `${BASE_URL}/temperature`
+    );
+
+    return res.data;
+};
