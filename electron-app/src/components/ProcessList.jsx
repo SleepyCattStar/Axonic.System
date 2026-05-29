@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 
 import { Search } from "lucide-react";
 
@@ -11,9 +11,10 @@ import {
 
 function ProcessList({ processes }) {
 
-    // search + sorting
+    // search
     const [query, setQuery] = useState("");
 
+    // sorting
     const [sortKey, setSortKey] =
         useState("cpu");
 
@@ -24,7 +25,9 @@ function ProcessList({ processes }) {
     const [coreHistory, setCoreHistory] =
         useState({});
 
-    // fetch core history
+    // -------------------------
+    // CORE HISTORY FETCH
+    // -------------------------
     useEffect(() => {
 
         const loadCoreHistory = async () => {
@@ -45,15 +48,17 @@ function ProcessList({ processes }) {
         loadCoreHistory();
 
         const interval =
-            setInterval(loadCoreHistory, 3000);
+            setInterval(loadCoreHistory, 5000);
 
         return () =>
             clearInterval(interval);
 
     }, []);
 
-    // sorting
-    const toggleSort = (key) => {
+    // -------------------------
+    // SORT TOGGLE
+    // -------------------------
+    const toggleSort = useCallback((key) => {
 
         if (sortKey === key) {
 
@@ -66,82 +71,98 @@ function ProcessList({ processes }) {
         } else {
 
             setSortKey(key);
+
             setSortOrder("desc");
         }
-    };
 
-    // grouping
-    const grouped = processes.reduce(
-        (acc, p) => {
+    }, [sortKey]);
 
-        const name = p.name;
+    // -------------------------
+    // PROCESS GROUPING
+    // -------------------------
+    const groups = useMemo(() => {
 
-        if (!acc[name]) {
+        const grouped = processes.reduce(
+            (acc, p) => {
 
-            acc[name] = {
+                const name = p.name;
 
-                name,
+                if (!acc[name]) {
 
-                processes: [],
+                    acc[name] = {
 
-                total_cpu: 0,
+                        name,
 
-                total_ram: 0
-            };
-        }
+                        processes: [],
 
-        acc[name].processes.push(p);
+                        total_cpu: 0,
 
-        acc[name].total_cpu +=
-            p.cpu_percent;
+                        total_ram: 0
+                    };
+                }
 
-        acc[name].total_ram +=
-            p.memory_percent;
+                acc[name].processes.push(p);
 
-        return acc;
+                acc[name].total_cpu +=
+                    p.cpu_percent;
 
-    }, {});
+                acc[name].total_ram +=
+                    p.memory_percent;
 
-    // object -> array
-    let groups =
-        Object.values(grouped);
+                return acc;
 
-    // search
-    groups = groups.filter(group =>
-        group.name
-            .toLowerCase()
-            .includes(
-                query.toLowerCase()
-            )
-    );
+            }, {}
+        );
 
-    // sorting
-    groups = groups.sort((a, b) => {
+        let result =
+            Object.values(grouped);
 
-        let A, B;
+        // search filter
+        result = result.filter(group =>
+            group.name
+                .toLowerCase()
+                .includes(
+                    query.toLowerCase()
+                )
+        );
 
-        if (sortKey === "name") {
+        // sorting
+        result.sort((a, b) => {
 
-            A = a.name.toLowerCase();
-            B = b.name.toLowerCase();
-        }
+            let A, B;
 
-        if (sortKey === "cpu") {
+            if (sortKey === "name") {
 
-            A = a.total_cpu;
-            B = b.total_cpu;
-        }
+                A = a.name.toLowerCase();
+                B = b.name.toLowerCase();
+            }
 
-        if (sortKey === "ram") {
+            if (sortKey === "cpu") {
 
-            A = a.total_ram;
-            B = b.total_ram;
-        }
+                A = a.total_cpu;
+                B = b.total_cpu;
+            }
 
-        return sortOrder === "asc"
-            ? (A > B ? 1 : -1)
-            : (A < B ? 1 : -1);
-    });
+            if (sortKey === "ram") {
+
+                A = a.total_ram;
+                B = b.total_ram;
+            }
+
+            return sortOrder === "asc"
+                ? (A > B ? 1 : -1)
+                : (A < B ? 1 : -1);
+        });
+
+        // LIMIT RENDER COUNT
+        return result.slice(0, 80);
+
+    }, [
+        processes,
+        query,
+        sortKey,
+        sortOrder
+    ]);
 
     return (
 
@@ -280,10 +301,7 @@ function ProcessList({ processes }) {
 
                     </div>
 
-                    <div className="
-                        col-span-1
-                    ">
-                    </div>
+                    <div className="col-span-1"></div>
 
                 </div>
 

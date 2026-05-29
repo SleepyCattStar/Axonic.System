@@ -4,6 +4,8 @@ import {
     Line
 } from "recharts";
 
+import React from "react";
+
 function MiniGraph({
     title,
     value,
@@ -81,4 +83,4 @@ function MiniGraph({
     );
 }
 
-export default MiniGraph;
+export default React.memo(MiniGraph);

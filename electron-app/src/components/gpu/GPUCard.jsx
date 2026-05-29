@@ -3,7 +3,7 @@ import {
     Thermometer,
     MemoryStick
 } from "lucide-react";
-
+import React from "react";
 import GPUStat from "./GPUStat";
 
 function GPUCard({
@@ -151,4 +151,4 @@ function GPUCard({
     );
 }
 
-export default GPUCard;
+export default React.memo(GPUCard);

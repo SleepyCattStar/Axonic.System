@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ProcessRow from "./ProcessRow";
+import React from "react";
 
 function ProcessGroup({ group }) {
 
@@ -69,4 +70,4 @@ function ProcessGroup({ group }) {
     );
 }
 
-export default ProcessGroup;
+export default React.memo(ProcessGroup);

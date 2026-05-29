@@ -114,5 +114,5 @@ function CoreMiniGraphs({ data }) {
     );
 }
 
-export default CoreMiniGraphs;
+export default React.memo(CoreMiniGraphs);
 
