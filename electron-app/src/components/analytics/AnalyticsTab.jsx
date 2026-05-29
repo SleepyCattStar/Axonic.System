@@ -216,6 +216,40 @@ if (!daily || !weekly) {
                     <AnalyticsGraph
                         title="Daily CPU vs RAM"
                         data={dailyHistory}
+                        lines={[
+                            {
+                                dataKey: "cpu",
+                                stroke: "#f97316",
+                                name: "CPU"
+                            },
+                            {
+                                dataKey: "ram",
+                                stroke: "#06b6d4",
+                                name: "RAM"
+                            }
+                        ]}
+                    />
+
+                </div>
+
+
+                <div className="col-span-2">
+
+                    <AnalyticsGraph
+                        title="Weekly CPU vs RAM"
+                        data={weeklyHistory}
+                        lines={[
+                            {
+                                dataKey: "cpu",
+                                stroke: "#f97316",
+                                name: "CPU"
+                            },
+                            {
+                                dataKey: "ram",
+                                stroke: "#06b6d4",
+                                name: "RAM"
+                            }
+                        ]}
                     />
 
                 </div>
@@ -223,8 +257,20 @@ if (!daily || !weekly) {
                 <div className="col-span-2">
 
                     <AnalyticsGraph
-                        title="Weekly CPU vs RAM"
-                        data={weeklyHistory}
+                        title="Thermal History"
+                        data={dailyHistory}
+                        lines={[
+                            {
+                                dataKey: "cpu_temp",
+                                stroke: "#ef4444",
+                                name: "CPU Temp"
+                            },
+                            {
+                                dataKey: "ssd_temp",
+                                stroke: "#eab308",
+                                name: "SSD Temp"
+                            }
+                        ]}
                     />
 
                 </div>

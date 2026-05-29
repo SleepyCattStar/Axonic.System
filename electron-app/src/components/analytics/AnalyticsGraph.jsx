@@ -8,11 +8,13 @@ import {
     CartesianGrid,
     Legend
 } from "recharts";
+
 import React from "react";
 
 function AnalyticsGraph({
     title,
-    data
+    data,
+    lines = []
 }) {
 
     return (
@@ -24,14 +26,20 @@ function AnalyticsGraph({
             p-4
         ">
 
-            <h2 className="
-                text-lg
-                font-semibold
-                mb-4
-            ">
-                {title}
-            </h2>
+            {/* HEADER */}
+            <div className="mb-4">
 
+                <h2 className="
+                    text-lg
+                    font-semibold
+                    text-white
+                ">
+                    {title}
+                </h2>
+
+            </div>
+
+            {/* GRAPH */}
             <div className="h-75">
 
                 <ResponsiveContainer
@@ -48,32 +56,47 @@ function AnalyticsGraph({
                         <XAxis
                             dataKey="timestamp"
                             tick={{ fill: "#888" }}
+                            minTickGap={25}
                         />
 
                         <YAxis
                             tick={{ fill: "#888" }}
                         />
 
-                        <Tooltip />
+                        <Tooltip
+                            contentStyle={{
+                                backgroundColor: "#0d0d0d",
+                                border: "1px solid #1f1f1f",
+                                borderRadius: "12px",
+                                color: "#fff"
+                            }}
+                        />
 
                         <Legend />
 
-                        <Line
-                            type="monotone"
-                            dataKey="cpu"
-                            isAnimationActive={false}
-                            stroke="#f97316"
-                            strokeWidth={2}
-                            dot={false}
-                        />
+                        {
+                            lines.map((line) => (
 
-                        <Line
-                            type="monotone"
-                            dataKey="ram"
-                            stroke="#06b6d4"
-                            strokeWidth={2}
-                            dot={false}
-                        />
+                                <Line
+                                    key={line.dataKey}
+
+                                    type="monotone"
+
+                                    dataKey={line.dataKey}
+
+                                    name={line.name}
+
+                                    stroke={line.stroke}
+
+                                    strokeWidth={2}
+
+                                    dot={false}
+
+                                    isAnimationActive={false}
+                                />
+
+                            ))
+                        }
 
                     </LineChart>
 
@@ -85,8 +108,4 @@ function AnalyticsGraph({
     );
 }
 
-// export default AnalyticsGraph;
 export default React.memo(AnalyticsGraph);
-
-//                             isAnimationActive={false}
-//    Add that to <Line to cut off the animations to reduce lag.
