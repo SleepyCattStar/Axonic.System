@@ -134,3 +134,13 @@ export const fetchAlerts = async () => {
 
     return res.data;
 };
+
+export const fetchGPUStats = async () => {
+
+    const res =
+        await axios.get(
+            `${BASE_URL}/gpu`
+        );
+
+    return res.data;
+};

@@ -6,7 +6,9 @@ def get_gpu_stats():
         data= get_nvidia_gpu_stats()
         return data
 
-    except Exception:
+    except Exception as e:
         return {
             "available": False,
+            "type": "none",
+            "reason":str(e)
         }

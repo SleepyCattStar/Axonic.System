@@ -10,12 +10,15 @@ import MiniGraph from "./components/MiniGraph";
 import SystemInfo from "./components/SystemInfo";
 import TopProcesses from "./components/TopProcesses";
 import AnalyticsTab from "./components/analytics/AnalyticsTab";
+import GPUCard from "./components/gpu/GPUCard";
+import GPUOverview from "./components/gpu/GPUOverview";
 
 import {
     fetchProcesses,
     fetchSystemStats,
     fetchHistory,                // getting the functions from the backend api here 
-    fetchSystemInfo
+    fetchSystemInfo,
+    fetchGPUStats
 } from "./api/telemetryApi";
 
 function App() {
@@ -34,6 +37,9 @@ function App() {
         useState("overview");
 
     const [systemInfo, setSystemInfo] =
+    useState(null);
+
+    const [gpuStats, setGpuStats] =
     useState(null);
 
     const refreshProcesses = async () => {
@@ -78,6 +84,7 @@ function App() {
             }
         };
 
+
         loadData();
 
         const interval =
@@ -87,6 +94,33 @@ function App() {
             clearInterval(interval);
 
     }, []);
+
+            useEffect(() => {
+
+            const loadGPU = async () => {
+
+                    try {
+
+                        const data =
+                            await fetchGPUStats();
+
+                        setGpuStats(data);
+
+                    } catch (err) {
+
+                        console.error(err);
+                    }
+                };
+
+                loadGPU();
+
+                const interval =
+                    setInterval(loadGPU, 5000);
+
+                return () =>
+                    clearInterval(interval);
+
+            }, []);
 
     if (!stats) {
 
@@ -143,47 +177,64 @@ function App() {
                         history && (
 
                             <div className="
-                                grid
-                                grid-cols-2
-                                gap-6
+                                h-full
+                                overflow-y-auto
+                                pr-2
                             ">
 
-                                <MiniGraph
-                                    title="CPU Usage"
-                                    value={`${stats.cpu_usage}%`}
-                                    data={history.cpu}
-                                    color="#f97316"
-                                />
+                                <div className="
+                                    grid
+                                    grid-cols-2
+                                    gap-6
+                                ">
 
-                                <MiniGraph
-                                    title="RAM Usage"
-                                    value={`${stats.ram_usage}%`}
-                                    data={history.ram}
-                                    color="#06b6d4"
-                                />
+                                    <MiniGraph
+                                        title="CPU Usage"
+                                        value={`${stats.cpu_usage}%`}
+                                        data={history.cpu}
+                                        color="#f97316"
+                                    />
 
-                                <MiniGraph
-                                    title="Disk Usage"
-                                    value={`${stats.disk_usage}%`}
-                                    data={history.disk}
-                                    color="#eab308"
-                                />
+                                    <MiniGraph
+                                        title="RAM Usage"
+                                        value={`${stats.ram_usage}%`}
+                                        data={history.ram}
+                                        color="#06b6d4"
+                                    />
 
-                                <MiniGraph
-                                    title="Download"
-                                    value={`${stats.download_speed_mb} MB/s`}
-                                    data={history.network_download}
-                                    color="#22c55e"
-                                />
+                                    <MiniGraph
+                                        title="Disk Usage"
+                                        value={`${stats.disk_usage}%`}
+                                        data={history.disk}
+                                        color="#eab308"
+                                    />
 
-                                <SystemInfo                         // added the system info here for rendering inside the overview tab
-                                    systemInfo={systemInfo}
-                                />
+                                    <MiniGraph
+                                        title="Download"
+                                        value={`${stats.download_speed_mb} MB/s`}
+                                        data={history.network_download}
+                                        color="#22c55e"
+                                    />
 
-                                <TopProcesses
-                                    processes={processes}
-                                    refresh={refreshProcesses}
-                                />
+                                    <GPUOverview
+                                        gpu={gpuStats}
+                                    />
+
+                                    <SystemInfo
+                                        systemInfo={systemInfo}
+                                    />
+
+                                    <div className="col-span-2">
+
+                                        <TopProcesses
+                                            processes={processes}
+                                            refresh={refreshProcesses}
+                                        />
+
+                                    </div>
+
+                                </div>
+
                             </div>
                         )
                     }
@@ -201,9 +252,22 @@ function App() {
                         activeTab === "performance" &&
                         history && (
 
-                            <PerformanceCharts
-                                history={history}
-                            />
+                            <div className="
+                                space-y-6
+                                h-full
+                                overflow-y-auto
+                                pr-2
+                            ">
+
+                                <PerformanceCharts
+                                    history={history}
+                                />
+
+                                <GPUCard
+                                    gpu={gpuStats}
+                                />
+
+                            </div>
                         )
                     }
 
