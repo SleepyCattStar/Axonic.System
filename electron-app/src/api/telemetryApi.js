@@ -103,3 +103,24 @@ export const fetchCoreHistory = async () => {
 
     return res.data;
 };
+
+export const fetchConfig = async () => {
+
+    const res =
+        await axios.get(
+            `${BASE_URL}/config`
+        );
+
+    return res.data;
+};
+
+export const updateConfig = async (data) => {
+
+    const res =
+        await axios.put(
+            `${BASE_URL}/config`,
+            data
+        );
+
+    return res.data;
+};
