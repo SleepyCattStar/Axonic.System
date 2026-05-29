@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 #services
 from app.services.history_service import start_background_collection
 from app.services.core_history_service import start_core_history_collection
+from app.services.monitoring.alert_daemon import start_alert_daemon
 
 from app.db.database import Base,engine
 from app.db import models
@@ -41,5 +42,10 @@ app.add_middleware(
 
 threading.Thread(
     target=collect_metrics,
+    daemon=True
+).start()
+
+threading.Thread(
+    target=start_alert_daemon,
     daemon=True
 ).start()

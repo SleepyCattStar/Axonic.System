@@ -27,7 +27,7 @@ def get_top_processes(limit=30):
             process_info = {
                 "pid": proc.info["pid"],
                 "name": proc.info["name"],
-                "cpu_percent": round(proc.cpu_percent(interval=None), 2),
+                "cpu_percent": round(proc.cpu_percent(interval=None), 2)/ psutil.cpu_count(),  # normalised it so it shows it as a whole of 100% , and not 300% just cyz 3 cores are using it 
                 "memory_percent": round(proc.info["memory_percent"], 2)
             }
 
