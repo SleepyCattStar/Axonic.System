@@ -8,6 +8,7 @@ import {
     CartesianGrid,
     Legend
 } from "recharts";
+import React from "react";
 
 function AnalyticsGraph({
     title,
@@ -84,7 +85,8 @@ function AnalyticsGraph({
     );
 }
 
-export default AnalyticsGraph;
+// export default AnalyticsGraph;
+export default React.memo(AnalyticsGraph);
 
 //                             isAnimationActive={false}
 //    Add that to <Line to cut off the animations to reduce lag.

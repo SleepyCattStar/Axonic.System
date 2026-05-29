@@ -7,6 +7,9 @@ import {
     Legend
 } from "recharts";
 
+import React from "react";
+
+
 const COLORS = [
 
     "#06b6d4",
@@ -86,7 +89,8 @@ function ProcessLoadChart({ data }) {
     );
 }
 
-export default ProcessLoadChart;
+// export default ProcessLoadChart;
+export default React.memo(ProcessLoadChart);
 
 
 //                             isAnimationActive={false} add to <Pie  to reduce lag

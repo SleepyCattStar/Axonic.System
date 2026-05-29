@@ -8,6 +8,8 @@ import {
     CartesianGrid
 } from "recharts";
 
+import React from "react";
+
 function CoreUsageChart({ data }) {
 
     return (
@@ -71,7 +73,8 @@ function CoreUsageChart({ data }) {
     );
 }
 
-export default CoreUsageChart;
+// export default CoreUsageChart;
+export default React.memo(CoreUsageChart);
 
 // isAnimationActive={false}
 

@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+# All API routes here
 from app.api.routes import system
 from app.api.routes import process
 from app.api.routes import history
@@ -6,7 +7,10 @@ from app.api.routes import system_info
 from app.api.routes import analytics
 from fastapi.middleware.cors import CORSMiddleware
 
+
+#services
 from app.services.history_service import start_background_collection
+from app.services.core_history_service import start_core_history_collection
 
 from app.db.database import Base,engine
 from app.db import models
@@ -16,7 +20,11 @@ import threading
 
 Base.metadata.create_all(bind=engine)  # creating the table
 app = FastAPI()
+
+# calling the services to run in background
 start_background_collection()
+start_core_history_collection()
+
 app.include_router(system.router,prefix = "/api")
 app.include_router(process.router,prefix = "/api")
 app.include_router(history.router,prefix = "/api")
