@@ -2,6 +2,8 @@ import psutil as ps
 import time 
 import platform
 import socket
+import getpass
+
 
 def get_uptime():
     boot_time = ps.boot_time()
@@ -60,7 +62,9 @@ def get_system_info():
             get_uptime(),
 
         "temperature":
-            get_cpu_temp()
+            get_cpu_temp(),
+        
+        "username":getpass.getuser(),
     }
 
 
