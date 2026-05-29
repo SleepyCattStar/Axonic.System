@@ -94,3 +94,12 @@ export const fetchCoreUsage = async () => {
 
     return res.data;
 };
+
+export const fetchCoreHistory = async () => {
+
+    const res = await axios.get(
+        `${BASE_URL}/analytics/core-history`
+    );
+
+    return res.data;
+};
