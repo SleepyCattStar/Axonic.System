@@ -15,6 +15,8 @@ class SystemMetrics(Base):
 
     upload = Column(Float)
     download = Column(Float)
+    cpu_temp = Column(Float, nullable=True)
+    ssd_temp = Column(Float, nullable=True)
 
 
 class AlertHistory(Base):

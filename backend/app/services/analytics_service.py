@@ -136,7 +136,9 @@ def get_daily_history():
                 round(d.cpu, 2),
 
             "ram":
-                round(d.ram, 2)
+                round(d.ram, 2),
+            "cpu_temp": d.cpu_temp,
+            "ssd_temp": d.ssd_temp,
         }
 
         for d in data
@@ -175,7 +177,9 @@ def get_weekly_history():
                 round(d.cpu, 2),
 
             "ram":
-                round(d.ram, 2)
+                round(d.ram, 2),
+            "cpu_temp": d.cpu_temp,
+            "ssd_temp": d.ssd_temp,
         }
 
         for d in sampled
