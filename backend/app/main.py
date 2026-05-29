@@ -20,7 +20,7 @@ from app.db import models
 from app.services.collector_service import collect_metrics
 import threading 
 
-Base.metadata.create_all(bind=engine)  # creating the table
+Base.metadata.create_all(bind=engine)  # creating the table   # create all will create all the tables from models.py
 app = FastAPI()
 
 # calling the services to run in background

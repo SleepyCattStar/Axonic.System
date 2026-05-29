@@ -5,5 +5,5 @@
     "temperature_limit": 50,
     "check_interval": 5,
     "alert_cooldown": 300,
-    "discord_webhook": "https://discord.com/api/webhooks/1400078982677921887/a9dNhOmif5PL6bnoRGFJBgXaPNZ5QDb9ehOVuZ6-k9Kgy1PBI_MLKUfoy-UgnMSrDL0E"
+    "discord_webhook": "here"
 }
