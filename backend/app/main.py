@@ -6,6 +6,7 @@ from app.api.routes import history
 from app.api.routes import system_info
 from app.api.routes import analytics
 from app.api.routes import config
+from app.api.routes import alerts
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -33,6 +34,7 @@ app.include_router(history.router,prefix = "/api")
 app.include_router(system_info.router,prefix="/api")
 app.include_router(analytics.router,prefix= "/api")
 app.include_router(config.router,prefix ="/api")
+app.include_router(alerts.router,prefix = "/api")
 
 app.add_middleware(
     CORSMiddleware,

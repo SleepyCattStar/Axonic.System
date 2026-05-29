@@ -1,5 +1,5 @@
 {
-    "alerts_enabled": true,
+    "alerts_enabled": false,
     "cpu_limit": 30,
     "ram_limit": 20,
     "temperature_limit": 50,
