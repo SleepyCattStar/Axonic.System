@@ -1,5 +1,7 @@
 import {
     Thermometer,
+    HardDrive,
+    Cpu,
     AlertTriangle
 } from "lucide-react";
 
@@ -15,13 +17,16 @@ function ThermalCard({ temperature }) {
                 rounded-2xl
                 p-6
             ">
-                Loading temperature...
+                Loading thermal data...
             </div>
         );
     }
 
-    const temp =
+    const cpuTemp =
         temperature.cpu_temp;
+
+    const ssdTemp =
+        temperature.ssd_temp;
 
     const status =
         temperature.thermal_status;
@@ -43,6 +48,23 @@ function ThermalCard({ temperature }) {
         return "text-gray-400";
     };
 
+    const getTempColor = (temp) => {
+
+        if (temp === null)
+            return "text-gray-500";
+
+        if (temp < 60)
+            return "text-cyan-400";
+
+        if (temp < 80)
+            return "text-green-400";
+
+        if (temp < 90)
+            return "text-yellow-400";
+
+        return "text-red-400";
+    };
+
     return (
 
         <div className="
@@ -50,7 +72,7 @@ function ThermalCard({ temperature }) {
             border border-[#171717]
             rounded-2xl
             p-6
-            space-y-5
+            space-y-6
         ">
 
             {/* HEADER */}
@@ -65,54 +87,129 @@ function ThermalCard({ temperature }) {
                         font-semibold
                         text-white
                     ">
-                        Thermal Status
+                        Thermal Monitor
                     </h2>
 
                     <p className="
                         text-sm
                         text-gray-500
                     ">
-                        Real-time CPU temperature
+                        Live hardware temperatures
                     </p>
 
                 </div>
 
                 <Thermometer
-                    size={28}
+                    size={30}
                     className="text-orange-400"
                 />
 
             </div>
 
-            {/* TEMP */}
+            {/* TEMPERATURE GRID */}
             <div className="
-                flex items-end gap-3
+                grid grid-cols-2 gap-4
             ">
 
+                {/* CPU */}
                 <div className="
-                    text-5xl
-                    font-bold
-                    text-white
+                    bg-[#0d0d0d]
+                    border border-[#1a1a1a]
+                    rounded-xl
+                    p-4
+                    space-y-2
                 ">
 
-                    {
-                        temp !== null
-                        ? `${temp}°C`
-                        : "--"
-                    }
+                    <div className="
+                        flex items-center gap-2
+                        text-gray-400 text-sm
+                    ">
+
+                        <Cpu size={16} />
+
+                        CPU
+
+                    </div>
+
+                    <div className={`
+                        text-3xl
+                        font-bold
+                        ${getTempColor(cpuTemp)}
+                    `}>
+
+                        {
+                            cpuTemp !== null
+                            ? `${cpuTemp}°C`
+                            : "--"
+                        }
+
+                    </div>
 
                 </div>
 
-                <div className={`
+                {/* SSD */}
+                <div className="
+                    bg-[#0d0d0d]
+                    border border-[#1a1a1a]
+                    rounded-xl
+                    p-4
+                    space-y-2
+                ">
+
+                    <div className="
+                        flex items-center gap-2
+                        text-gray-400 text-sm
+                    ">
+
+                        <HardDrive size={16} />
+
+                        SSD
+
+                    </div>
+
+                    <div className={`
+                        text-3xl
+                        font-bold
+                        ${getTempColor(ssdTemp)}
+                    `}>
+
+                        {
+                            ssdTemp !== null
+                            ? `${ssdTemp}°C`
+                            : "--"
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {/* STATUS */}
+            <div className="
+                flex items-center justify-between
+                bg-[#0d0d0d]
+                border border-[#1a1a1a]
+                rounded-xl
+                px-4 py-3
+            ">
+
+                <span className="
                     text-sm
-                    font-medium
-                    mb-1
+                    text-gray-400
+                ">
+                    Thermal Status
+                </span>
+
+                <span className={`
+                    text-sm
+                    font-semibold
                     ${getStatusColor()}
                 `}>
 
                     {status.toUpperCase()}
 
-                </div>
+                </span>
 
             </div>
 
@@ -123,7 +220,7 @@ function ThermalCard({ temperature }) {
             ? (
 
                 <div className="
-                    flex items-center gap-2
+                    flex items-center gap-3
                     bg-red-500/10
                     border border-red-500/20
                     rounded-xl
@@ -136,7 +233,7 @@ function ThermalCard({ temperature }) {
 
                     <span>
 
-                        High CPU temperature detected
+                        High system temperature detected
 
                     </span>
 
