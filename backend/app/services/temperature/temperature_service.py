@@ -62,3 +62,33 @@ def get_thermal_status(temp):
         return "hot"
 
     return "critical"
+
+def get_ssd_temperature():
+
+    try:
+
+        temps = psutil.sensors_temperatures()
+
+        if not temps:
+            return None
+
+        for key, entries in temps.items():
+
+            key_lower = key.lower()
+
+            if "nvme" in key_lower:
+
+                for entry in entries:
+
+                    if entry.current:
+
+                        return round(
+                            entry.current,
+                            1
+                        )
+
+        return None
+
+    except Exception:
+
+        return None
