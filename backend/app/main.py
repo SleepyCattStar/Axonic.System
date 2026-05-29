@@ -8,6 +8,7 @@ from app.api.routes import analytics
 from app.api.routes import config
 from app.api.routes import alerts
 from app.api.routes import gpu
+from app.api.routes import temperature
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -37,6 +38,7 @@ app.include_router(analytics.router,prefix= "/api")
 app.include_router(config.router,prefix ="/api")
 app.include_router(alerts.router,prefix = "/api")
 app.include_router(gpu.router,prefix="/api")
+app.include_router(temperature.router,prefix="/api")
 
 app.add_middleware(
     CORSMiddleware,
