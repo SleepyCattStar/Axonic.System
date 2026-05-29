@@ -4,11 +4,7 @@ psutil
 sqlalchemy
 requests
 python-dotenv
-os
-signal
-time
-threading
-platform
-socket
 pathlib
 requests
+nvidia-ml-py
+GPUtil
