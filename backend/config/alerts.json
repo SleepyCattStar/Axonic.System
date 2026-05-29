@@ -1,13 +1,9 @@
 {
     "alerts_enabled": true,
-
-    "cpu_limit": 85,
+    "cpu_limit": 20,
     "ram_limit": 90,
     "temperature_limit": 80,
-
     "check_interval": 5,
-
     "alert_cooldown": 300,
-
     "discord_webhook": ""
 }
