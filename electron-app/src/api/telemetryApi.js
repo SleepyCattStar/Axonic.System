@@ -124,3 +124,13 @@ export const updateConfig = async (data) => {
 
     return res.data;
 };
+
+export const fetchAlerts = async () => {
+
+    const res =
+        await axios.get(
+            `${BASE_URL}/alerts`
+        );
+
+    return res.data;
+};

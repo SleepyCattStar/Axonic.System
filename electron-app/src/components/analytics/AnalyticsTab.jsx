@@ -5,6 +5,7 @@ import WeeklyStats from "./WeeklyStats";
 import AnalyticsGraph from "./AnalyticsGraph";
 import ProcessLoadChart from "./ProcessLoadChart";
 import CoreUsageChart from "./CoreUsageChart";
+import AlertsPanel from "./AlertsPanel";
 
 import {
     fetchAnalyticsDaily,
@@ -12,7 +13,8 @@ import {
     fetchDailyHistory,
     fetchWeeklyHistory,
     fetchProcessLoad,
-    fetchCoreUsage
+    fetchCoreUsage,
+    fetchAlerts
 } from "../../api/telemetryApi";
 
 function AnalyticsTab() {
@@ -24,6 +26,8 @@ function AnalyticsTab() {
     const [weeklyHistory, setWeeklyHistory] = useState([]); 
     const [processLoad, setProcessLoad] = useState([]);
     const [coreUsage, setCoreUsage] = useState([]);
+    const [alerts, setAlerts] = useState([]);
+    
     // useEffect(() => {
 
     //     const loadAnalytics = async () => {
@@ -89,6 +93,11 @@ function AnalyticsTab() {
 
             const coreUsageData =
                 await fetchCoreUsage();
+            
+            const alertsData =
+                await fetchAlerts();
+
+            setAlerts(alertsData);
 
             setCoreUsage(coreUsageData);
 
@@ -235,6 +244,15 @@ if (!daily || !weekly) {
                     />
 
                 </div>
+
+                <div className="col-span-2">
+
+                    <AlertsPanel
+                        alerts={alerts}
+                    />
+
+                </div>
+
 
             </div>
 
